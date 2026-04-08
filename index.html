@@ -1,3303 +1,1428 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-    <title>Stratvex Admin Panel</title>
-    <link
-      href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Outfit:wght@300;400;500;600&display=swap"
-      rel="stylesheet"
-    />
-    <style>
-      :root {
-        --navy: #0b1426;
-        --navy2: #0f1d35;
-        --navy3: #162040;
-        --navy4: #1e2d4d;
-        --gold: #c9a84c;
-        --gold2: #e0bc6a;
-        --gold3: #f0d080;
-        --white: #f8f9fc;
-        --muted: #8892a4;
-        --border: #1e2d4d;
-        --success: #22c55e;
-        --error: #ef4444;
-        --warning: #f59e0b;
-        --info: #3b82f6;
-        --sidebar-w: 260px;
-      }
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-      }
-      body {
-        font-family: "Outfit", sans-serif;
-        background: var(--navy);
-        color: var(--white);
-        min-height: 100vh;
-      }
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Stratvex Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --navy:#0b1426;--navy2:#0f1d35;--navy3:#162040;--navy4:#1e2d4d;
+  --gold:#c9a84c;--gold2:#e0bc6a;
+  --white:#f8f9fc;--muted:#8892a4;--border:rgba(255,255,255,.08);
+  --success:#22c55e;--error:#ef4444;--warning:#f59e0b;--info:#3b82f6;
+  --sw:260px;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+body{font-family:'Outfit',sans-serif;background:var(--navy);color:var(--white);min-height:100vh;font-size:14px;}
 
-      /* ── LOADER ── */
-      #loader {
-        position: fixed;
-        inset: 0;
-        background: var(--navy);
-        z-index: 9999;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        gap: 16px;
-      }
-      #loader .logo-text {
-        font-family: "Playfair Display", serif;
-        font-size: 32px;
-        color: var(--gold);
-        letter-spacing: 2px;
-      }
-      .spinner {
-        width: 48px;
-        height: 48px;
-        border: 3px solid var(--navy3);
-        border-top: 3px solid var(--gold);
-        border-radius: 50%;
-        animation: spin 1s linear infinite;
-      }
-      @keyframes spin {
-        to {
-          transform: rotate(360deg);
-        }
-      }
+/* ── LOADER ── */
+#loader{position:fixed;inset:0;background:var(--navy);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;}
+#loader.hide{display:none;}
+.llogo{font-family:'Playfair Display',serif;font-size:32px;color:var(--gold);letter-spacing:2px;}
+.llogo span:first-child{color:var(--white);}
+.llogo span:last-child{color:var(--gold);}
+.lspin{width:40px;height:40px;border:3px solid var(--navy3);border-top-color:var(--gold);border-radius:50%;animation:spin 1s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
 
-      /* ── LOGIN ── */
-      #login-page {
-        display: none;
-        min-height: 100vh;
-        align-items: center;
-        justify-content: center;
-        background: var(--navy);
-      }
-      #login-page.active {
-        display: flex;
-      }
-      .login-box {
-        background: var(--navy2);
-        border: 1px solid var(--border);
-        border-radius: 16px;
-        padding: 40px;
-        width: 100%;
-        max-width: 420px;
-      }
-      .login-logo {
-        font-family: "Playfair Display", serif;
-        font-size: 28px;
-        color: var(--gold);
-        text-align: center;
-        margin-bottom: 8px;
-      }
-      .login-sub {
-        color: var(--muted);
-        text-align: center;
-        font-size: 14px;
-        margin-bottom: 32px;
-      }
-      .form-group {
-        margin-bottom: 20px;
-      }
-      .form-group label {
-        display: block;
-        font-size: 13px;
-        color: var(--muted);
-        margin-bottom: 6px;
-        font-weight: 500;
-      }
-      .form-group input {
-        width: 100%;
-        background: var(--navy3);
-        border: 1px solid var(--border);
-        border-radius: 8px;
-        padding: 12px 16px;
-        color: var(--white);
-        font-family: "Outfit", sans-serif;
-        font-size: 14px;
-        outline: none;
-        transition: 0.2s;
-      }
-      .form-group input:focus {
-        border-color: var(--gold);
-      }
-      .btn-gold {
-        width: 100%;
-        background: var(--gold);
-        color: var(--navy);
-        font-family: "Outfit", sans-serif;
-        font-size: 15px;
-        font-weight: 600;
-        padding: 13px;
-        border: none;
-        border-radius: 8px;
-        cursor: pointer;
-        transition: 0.2s;
-      }
-      .btn-gold:hover {
-        background: var(--gold2);
-      }
+/* ── LOGIN ── */
+#login-page{display:none;min-height:100vh;align-items:center;justify-content:center;background:var(--navy);padding:20px;}
+#login-page.active{display:flex;}
+.login-box{background:var(--navy2);border:1px solid var(--border);border-radius:16px;padding:32px 24px;width:100%;max-width:400px;}
+.login-logo{font-family:'Playfair Display',serif;font-size:24px;text-align:center;margin-bottom:6px;}
+.login-logo span:first-child{color:var(--white);}
+.login-logo span:last-child{color:var(--gold);}
+.login-sub{color:var(--muted);text-align:center;font-size:13px;margin-bottom:28px;}
+.fi{margin-bottom:16px;}
+.fi label{display:block;font-size:12px;color:var(--muted);margin-bottom:6px;font-weight:500;}
+.fi input{width:100%;background:var(--navy3);border:1px solid var(--border);border-radius:8px;padding:12px 14px;color:var(--white);font-family:'Outfit',sans-serif;font-size:14px;outline:none;}
+.fi input:focus{border-color:var(--gold);}
+.btn-gold{width:100%;background:var(--gold);color:var(--navy);font-family:'Outfit',sans-serif;font-size:15px;font-weight:600;padding:13px;border:none;border-radius:8px;cursor:pointer;}
+.btn-gold:active{background:var(--gold2);}
+.lerr{color:var(--error);text-align:center;margin-top:12px;font-size:13px;display:none;}
 
-      /* ── APP SHELL ── */
-      #app {
-        display: none;
-      }
-      #app.active {
-        display: flex;
-        min-height: 100vh;
-      }
+/* ── APP SHELL ── */
+#app{display:none;}
+#app.active{display:flex;min-height:100vh;}
 
-      /* ── SIDEBAR ── */
-      .sidebar {
-        width: var(--sidebar-w);
-        background: var(--navy2);
-        border-right: 1px solid var(--border);
-        display: flex;
-        flex-direction: column;
-        position: fixed;
-        top: 0;
-        left: 0;
-        height: 100vh;
-        z-index: 100;
-        overflow-y: auto;
-        transition: 0.3s;
-      }
-      .sidebar-header {
-        padding: 24px 20px;
-        border-bottom: 1px solid var(--border);
-      }
-      .sidebar-logo {
-        font-family: "Playfair Display", serif;
-        font-size: 22px;
-        color: var(--gold);
-      }
-      .sidebar-role {
-        font-size: 12px;
-        color: var(--muted);
-        margin-top: 2px;
-      }
-      .sidebar-nav {
-        padding: 16px 0;
-        flex: 1;
-      }
-      .nav-section {
-        font-size: 10px;
-        color: var(--muted);
-        font-weight: 600;
-        letter-spacing: 1.5px;
-        text-transform: uppercase;
-        padding: 8px 20px 4px;
-      }
-      .nav-item {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        padding: 10px 20px;
-        cursor: pointer;
-        transition: 0.15s;
-        border-left: 3px solid transparent;
-        font-size: 14px;
-        color: var(--muted);
-        position: relative;
-      }
-      .nav-item:hover {
-        background: var(--navy3);
-        color: var(--white);
-      }
-      .nav-item.active {
-        background: var(--navy3);
-        color: var(--gold);
-        border-left-color: var(--gold);
-      }
-      .nav-item .icon {
-        font-size: 16px;
-        width: 20px;
-        text-align: center;
-      }
-      .badge {
-        background: var(--error);
-        color: #fff;
-        font-size: 10px;
-        font-weight: 600;
-        padding: 2px 6px;
-        border-radius: 20px;
-        min-width: 18px;
-        text-align: center;
-        margin-left: auto;
-      }
-      .badge.gold {
-        background: var(--gold);
-        color: var(--navy);
-      }
-      .sidebar-footer {
-        padding: 16px 20px;
-        border-top: 1px solid var(--border);
-      }
-      .admin-info {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-      }
-      .admin-avatar {
-        width: 36px;
-        height: 36px;
-        background: var(--gold);
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: 700;
-        font-size: 14px;
-        color: var(--navy);
-      }
-      .admin-name {
-        font-size: 13px;
-        font-weight: 500;
-      }
-      .admin-logout {
-        font-size: 12px;
-        color: var(--muted);
-        cursor: pointer;
-        margin-top: 2px;
-      }
-      .admin-logout:hover {
-        color: var(--error);
-      }
+/* ── OVERLAY ── */
+.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:150;}
+.sidebar-overlay.active{display:block;}
 
-      /* ── MAIN CONTENT ── */
-      .main {
-        margin-left: var(--sidebar-w);
-        flex: 1;
-        min-height: 100vh;
-      }
-      .topbar {
-        background: var(--navy2);
-        border-bottom: 1px solid var(--border);
-        padding: 16px 28px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        position: sticky;
-        top: 0;
-        z-index: 50;
-      }
-      .page-title {
-        font-family: "Playfair Display", serif;
-        font-size: 20px;
-        color: var(--white);
-      }
-      .topbar-right {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-      }
-      .topbar-time {
-        font-size: 13px;
-        color: var(--muted);
-      }
-      .content {
-        padding: 28px;
-      }
+/* ── SIDEBAR ── */
+.sidebar{
+  width:var(--sw);background:var(--navy2);border-right:1px solid var(--border);
+  position:fixed;top:0;left:0;height:100vh;z-index:200;overflow-y:auto;
+  display:flex;flex-direction:column;
+  transform:translateX(-100%);transition:transform .3s ease;
+}
+.sidebar.open{transform:translateX(0);}
+/* Desktop: always visible */
+@media(min-width:900px){
+  .sidebar{transform:translateX(0);}
+  .sidebar-overlay{display:none!important;}
+}
+.sidebar-header{padding:20px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.sidebar-logo{font-family:'Playfair Display',serif;font-size:20px;letter-spacing:2px;}
+.sidebar-logo span:first-child{color:var(--white);}
+.sidebar-logo span:last-child{color:var(--gold);}
+.sidebar-close{background:none;border:none;color:var(--muted);font-size:22px;cursor:pointer;display:block;}
+@media(min-width:900px){.sidebar-close{display:none;}}
+.sidebar-user{padding:14px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;}
+.sadmin-av{width:36px;height:36px;background:var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;color:var(--navy);flex-shrink:0;}
+.sadmin-name{font-size:13px;font-weight:600;}
+.sadmin-role{font-size:11px;color:var(--muted);}
+.snav{padding:10px 0;flex:1;}
+.snav-section{font-size:10px;color:var(--muted);font-weight:600;letter-spacing:1.5px;text-transform:uppercase;padding:10px 16px 4px;}
+.nitem{display:flex;align-items:center;gap:10px;padding:11px 16px;cursor:pointer;transition:.15s;border-left:3px solid transparent;font-size:13px;color:var(--muted);}
+.nitem:hover,.nitem.active{background:var(--navy3);color:var(--white);}
+.nitem.active{color:var(--gold);border-left-color:var(--gold);}
+.nitem .ni{font-size:15px;width:18px;text-align:center;flex-shrink:0;}
+.nbadge{background:var(--error);color:#fff;font-size:10px;font-weight:600;padding:2px 5px;border-radius:20px;min-width:18px;text-align:center;margin-left:auto;}
+.nbadge.gold{background:var(--gold);color:var(--navy);}
+.sidebar-foot{padding:14px 16px;border-top:1px solid var(--border);}
+.logout-btn{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:13px;cursor:pointer;}
+.logout-btn:hover{color:var(--error);}
 
-      /* ── CARDS ── */
-      .stats-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 16px;
-        margin-bottom: 28px;
-      }
-      .stat-card {
-        background: var(--navy2);
-        border: 1px solid var(--border);
-        border-radius: 12px;
-        padding: 20px;
-        position: relative;
-        overflow: hidden;
-      }
-      .stat-card::before {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 3px;
-      }
-      .stat-card.blue::before {
-        background: var(--info);
-      }
-      .stat-card.gold::before {
-        background: var(--gold);
-      }
-      .stat-card.green::before {
-        background: var(--success);
-      }
-      .stat-card.red::before {
-        background: var(--error);
-      }
-      .stat-card.purple::before {
-        background: #8b5cf6;
-      }
-      .stat-card.orange::before {
-        background: var(--warning);
-      }
-      .stat-label {
-        font-size: 12px;
-        color: var(--muted);
-        font-weight: 500;
-        margin-bottom: 8px;
-      }
-      .stat-value {
-        font-size: 24px;
-        font-weight: 600;
-        color: var(--white);
-      }
-      .stat-icon {
-        position: absolute;
-        right: 16px;
-        top: 50%;
-        transform: translateY(-50%);
-        font-size: 28px;
-        opacity: 0.15;
-      }
+/* ── MAIN ── */
+.main{flex:1;min-height:100vh;min-width:0;}
+@media(min-width:900px){.main{margin-left:var(--sw);}}
 
-      /* ── TABLES ── */
-      .table-card {
-        background: var(--navy2);
-        border: 1px solid var(--border);
-        border-radius: 12px;
-        overflow: hidden;
-        margin-bottom: 24px;
-      }
-      .table-header {
-        padding: 16px 20px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        border-bottom: 1px solid var(--border);
-      }
-      .table-title {
-        font-size: 15px;
-        font-weight: 600;
-      }
-      .table-wrap {
-        overflow-x: auto;
-      }
-      table {
-        width: 100%;
-        border-collapse: collapse;
-      }
-      thead th {
-        background: var(--navy3);
-        padding: 11px 16px;
-        text-align: left;
-        font-size: 12px;
-        color: var(--muted);
-        font-weight: 600;
-        letter-spacing: 0.5px;
-        white-space: nowrap;
-      }
-      tbody tr {
-        border-bottom: 1px solid var(--border);
-        transition: 0.15s;
-      }
-      tbody tr:last-child {
-        border-bottom: none;
-      }
-      tbody tr:hover {
-        background: var(--navy3);
-      }
-      tbody td {
-        padding: 12px 16px;
-        font-size: 13px;
-        white-space: nowrap;
-      }
+/* ── TOPBAR ── */
+.topbar{background:var(--navy2);border-bottom:1px solid var(--border);padding:0 16px;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;}
+.topbar-left{display:flex;align-items:center;gap:12px;}
+.hamburger{background:none;border:none;cursor:pointer;display:flex;flex-direction:column;gap:5px;padding:4px;}
+.hamburger span{width:22px;height:2px;background:var(--white);display:block;}
+@media(min-width:900px){.hamburger{display:none;}}
+.page-title{font-family:'Playfair Display',serif;font-size:17px;}
+.topbar-time{font-size:12px;color:var(--muted);}
 
-      /* ── BADGES ── */
-      .status-badge {
-        display: inline-flex;
-        align-items: center;
-        padding: 3px 10px;
-        border-radius: 20px;
-        font-size: 11px;
-        font-weight: 600;
-      }
-      .status-badge.pending {
-        background: rgba(245, 158, 11, 0.15);
-        color: var(--warning);
-      }
-      .status-badge.approved,
-      .status-badge.active,
-      .status-badge.verified {
-        background: rgba(34, 197, 94, 0.15);
-        color: var(--success);
-      }
-      .status-badge.rejected,
-      .status-badge.suspended {
-        background: rgba(239, 68, 68, 0.15);
-        color: var(--error);
-      }
-      .status-badge.processing {
-        background: rgba(59, 130, 246, 0.15);
-        color: var(--info);
-      }
-      .status-badge.completed {
-        background: rgba(34, 197, 94, 0.15);
-        color: var(--success);
-      }
-      .status-badge.unverified {
-        background: rgba(139, 92, 246, 0.15);
-        color: #8b5cf6;
-      }
+/* ── CONTENT ── */
+.content{padding:16px;}
+@media(min-width:640px){.content{padding:20px;}}
+@media(min-width:900px){.content{padding:24px;}}
 
-      /* ── BUTTONS ── */
-      .btn {
-        padding: 7px 14px;
-        border-radius: 7px;
-        font-size: 12px;
-        font-weight: 600;
-        cursor: pointer;
-        border: none;
-        transition: 0.15s;
-        font-family: "Outfit", sans-serif;
-      }
-      .btn-sm {
-        padding: 5px 10px;
-        font-size: 11px;
-      }
-      .btn-approve {
-        background: rgba(34, 197, 94, 0.15);
-        color: var(--success);
-        border: 1px solid rgba(34, 197, 94, 0.3);
-      }
-      .btn-approve:hover {
-        background: var(--success);
-        color: #fff;
-      }
-      .btn-reject {
-        background: rgba(239, 68, 68, 0.15);
-        color: var(--error);
-        border: 1px solid rgba(239, 68, 68, 0.3);
-      }
-      .btn-reject:hover {
-        background: var(--error);
-        color: #fff;
-      }
-      .btn-view {
-        background: rgba(59, 130, 246, 0.15);
-        color: var(--info);
-        border: 1px solid rgba(59, 130, 246, 0.3);
-      }
-      .btn-view:hover {
-        background: var(--info);
-        color: #fff;
-      }
-      .btn-primary {
-        background: var(--gold);
-        color: var(--navy);
-        font-weight: 600;
-      }
-      .btn-primary:hover {
-        background: var(--gold2);
-      }
-      .btn-danger {
-        background: var(--error);
-        color: #fff;
-      }
-      .btn-danger:hover {
-        background: #dc2626;
-      }
-      .btn-icon {
-        background: none;
-        border: none;
-        cursor: pointer;
-        font-size: 16px;
-        padding: 4px 6px;
-        border-radius: 6px;
-        transition: 0.15s;
-      }
-      .btn-icon:hover {
-        background: var(--navy3);
-      }
+/* ── STAT CARDS ── */
+.stats-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:20px;}
+@media(min-width:640px){.stats-grid{grid-template-columns:repeat(3,1fr);}}
+@media(min-width:900px){.stats-grid{grid-template-columns:repeat(4,1fr);}}
+@media(min-width:1200px){.stats-grid{grid-template-columns:repeat(5,1fr);}}
+.stat-card{background:var(--navy2);border:1px solid var(--border);border-radius:12px;padding:14px;position:relative;overflow:hidden;}
+.stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
+.stat-card.blue::before{background:var(--info);}
+.stat-card.gold::before{background:var(--gold);}
+.stat-card.green::before{background:var(--success);}
+.stat-card.red::before{background:var(--error);}
+.stat-card.purple::before{background:#8b5cf6;}
+.stat-card.orange::before{background:var(--warning);}
+.stat-label{font-size:11px;color:var(--muted);font-weight:500;margin-bottom:6px;}
+.stat-value{font-size:20px;font-weight:700;}
+.stat-icon{position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:24px;opacity:.12;}
 
-      /* ── MODAL ── */
-      .modal-overlay {
-        display: none;
-        position: fixed;
-        inset: 0;
-        background: rgba(0, 0, 0, 0.7);
-        z-index: 500;
-        align-items: center;
-        justify-content: center;
-        padding: 20px;
-      }
-      .modal-overlay.active {
-        display: flex;
-      }
-      .modal {
-        background: var(--navy2);
-        border: 1px solid var(--border);
-        border-radius: 16px;
-        width: 100%;
-        max-width: 600px;
-        max-height: 90vh;
-        overflow-y: auto;
-      }
-      .modal-header {
-        padding: 20px 24px;
-        border-bottom: 1px solid var(--border);
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-      }
-      .modal-title {
-        font-size: 16px;
-        font-weight: 600;
-      }
-      .modal-close {
-        background: none;
-        border: none;
-        color: var(--muted);
-        font-size: 20px;
-        cursor: pointer;
-      }
-      .modal-close:hover {
-        color: var(--white);
-      }
-      .modal-body {
-        padding: 24px;
-      }
-      .modal-footer {
-        padding: 16px 24px;
-        border-top: 1px solid var(--border);
-        display: flex;
-        gap: 10px;
-        justify-content: flex-end;
-      }
+/* ── TABLE CARD ── */
+.tcard{background:var(--navy2);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:16px;}
+.tcard-head{padding:14px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:8px;}
+.tcard-title{font-size:14px;font-weight:600;}
+.twrap{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+table{width:100%;border-collapse:collapse;min-width:400px;}
+thead th{background:var(--navy3);padding:10px 12px;text-align:left;font-size:11px;color:var(--muted);font-weight:600;letter-spacing:.5px;white-space:nowrap;}
+tbody tr{border-bottom:1px solid var(--border);transition:.15s;}
+tbody tr:last-child{border-bottom:none;}
+tbody tr:hover{background:var(--navy3);}
+tbody td{padding:11px 12px;font-size:12px;white-space:nowrap;}
 
-      /* ── FORM ELEMENTS ── */
-      .field {
-        margin-bottom: 16px;
-      }
-      .field label {
-        display: block;
-        font-size: 12px;
-        color: var(--muted);
-        margin-bottom: 6px;
-        font-weight: 500;
-      }
-      .field input,
-      .field select,
-      .field textarea {
-        width: 100%;
-        background: var(--navy3);
-        border: 1px solid var(--border);
-        border-radius: 8px;
-        padding: 10px 14px;
-        color: var(--white);
-        font-family: "Outfit", sans-serif;
-        font-size: 13px;
-        outline: none;
-        transition: 0.2s;
-      }
-      .field input:focus,
-      .field select:focus,
-      .field textarea:focus {
-        border-color: var(--gold);
-      }
-      .field textarea {
-        resize: vertical;
-        min-height: 80px;
-      }
-      .field select option {
-        background: var(--navy3);
-      }
+/* ── BADGES ── */
+.sbadge{display:inline-flex;align-items:center;padding:3px 8px;border-radius:20px;font-size:10px;font-weight:600;}
+.sbadge.pending{background:rgba(245,158,11,.15);color:var(--warning);}
+.sbadge.approved,.sbadge.active,.sbadge.verified,.sbadge.completed{background:rgba(34,197,94,.15);color:var(--success);}
+.sbadge.rejected,.sbadge.suspended{background:rgba(239,68,68,.15);color:var(--error);}
+.sbadge.processing,.sbadge.info{background:rgba(59,130,246,.15);color:var(--info);}
+.sbadge.unverified{background:rgba(139,92,246,.15);color:#8b5cf6;}
 
-      /* ── SEARCH BAR ── */
-      .search-bar {
-        display: flex;
-        gap: 10px;
-        margin-bottom: 20px;
-      }
-      .search-bar input {
-        flex: 1;
-        background: var(--navy2);
-        border: 1px solid var(--border);
-        border-radius: 8px;
-        padding: 10px 16px;
-        color: var(--white);
-        font-family: "Outfit", sans-serif;
-        font-size: 14px;
-        outline: none;
-      }
-      .search-bar input:focus {
-        border-color: var(--gold);
-      }
+/* ── BUTTONS ── */
+.btn{padding:7px 12px;border-radius:7px;font-size:12px;font-weight:600;cursor:pointer;border:none;font-family:'Outfit',sans-serif;transition:.15s;white-space:nowrap;}
+.btn-sm{padding:5px 9px;font-size:11px;}
+.btn-approve{background:rgba(34,197,94,.15);color:var(--success);border:1px solid rgba(34,197,94,.3);}
+.btn-approve:active{background:var(--success);color:#fff;}
+.btn-reject{background:rgba(239,68,68,.15);color:var(--error);border:1px solid rgba(239,68,68,.3);}
+.btn-reject:active{background:var(--error);color:#fff;}
+.btn-view{background:rgba(59,130,246,.15);color:var(--info);border:1px solid rgba(59,130,246,.3);}
+.btn-view:active{background:var(--info);color:#fff;}
+.btn-primary{background:var(--gold);color:var(--navy);font-weight:600;}
+.btn-primary:active{background:var(--gold2);}
+.btn-danger{background:var(--error);color:#fff;}
+.btn-ghost{background:var(--navy3);border:1px solid var(--border);color:var(--white);}
+.btn-full{width:100%;padding:12px;font-size:14px;}
+.btns-row{display:flex;gap:8px;flex-wrap:wrap;}
 
-      /* ── CHAT ── */
-      .chat-layout {
-        display: grid;
-        grid-template-columns: 280px 1fr;
-        gap: 0;
-        background: var(--navy2);
-        border: 1px solid var(--border);
-        border-radius: 12px;
-        height: 600px;
-        overflow: hidden;
-      }
-      .chat-users {
-        border-right: 1px solid var(--border);
-        overflow-y: auto;
-      }
-      .chat-users-header {
-        padding: 14px 16px;
-        border-bottom: 1px solid var(--border);
-        font-size: 14px;
-        font-weight: 600;
-      }
-      .chat-user-item {
-        padding: 12px 16px;
-        cursor: pointer;
-        transition: 0.15s;
-        border-bottom: 1px solid var(--border);
-        display: flex;
-        align-items: center;
-        gap: 10px;
-      }
-      .chat-user-item:hover,
-      .chat-user-item.active {
-        background: var(--navy3);
-      }
-      .chat-user-avatar {
-        width: 36px;
-        height: 36px;
-        background: var(--gold);
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 13px;
-        font-weight: 700;
-        color: var(--navy);
-        flex-shrink: 0;
-      }
-      .chat-user-name {
-        font-size: 13px;
-        font-weight: 500;
-      }
-      .chat-user-last {
-        font-size: 11px;
-        color: var(--muted);
-        margin-top: 2px;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        max-width: 160px;
-      }
-      .chat-main {
-        display: flex;
-        flex-direction: column;
-      }
-      .chat-main-header {
-        padding: 14px 16px;
-        border-bottom: 1px solid var(--border);
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-      }
-      .chat-messages {
-        flex: 1;
-        overflow-y: auto;
-        padding: 16px;
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-      }
-      .msg {
-        max-width: 70%;
-        padding: 10px 14px;
-        border-radius: 12px;
-        font-size: 13px;
-        line-height: 1.5;
-      }
-      .msg.user {
-        background: var(--navy3);
-        align-self: flex-start;
-        border-bottom-left-radius: 4px;
-      }
-      .msg.admin {
-        background: var(--gold);
-        color: var(--navy);
-        align-self: flex-end;
-        border-bottom-right-radius: 4px;
-      }
-      .msg.code {
-        background: var(--navy);
-        border: 1px solid var(--gold);
-        font-family: monospace;
-        font-size: 14px;
-        font-weight: 700;
-        color: var(--gold);
-        letter-spacing: 2px;
-        align-self: flex-end;
-      }
-      .msg-time {
-        font-size: 10px;
-        opacity: 0.6;
-        margin-top: 4px;
-      }
-      .chat-input-area {
-        padding: 14px 16px;
-        border-top: 1px solid var(--border);
-        display: flex;
-        gap: 10px;
-      }
-      .chat-input {
-        flex: 1;
-        background: var(--navy3);
-        border: 1px solid var(--border);
-        border-radius: 8px;
-        padding: 10px 14px;
-        color: var(--white);
-        font-family: "Outfit", sans-serif;
-        font-size: 13px;
-        outline: none;
-      }
-      .chat-input:focus {
-        border-color: var(--gold);
-      }
-      .code-btns {
-        display: flex;
-        gap: 6px;
-        padding: 10px 16px;
-        border-top: 1px solid var(--border);
-        flex-wrap: wrap;
-      }
-      .btn-code {
-        background: rgba(201, 168, 76, 0.15);
-        color: var(--gold);
-        border: 1px solid rgba(201, 168, 76, 0.3);
-        padding: 6px 12px;
-        border-radius: 6px;
-        font-size: 12px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: 0.15s;
-        font-family: "Outfit", sans-serif;
-      }
-      .btn-code:hover {
-        background: var(--gold);
-        color: var(--navy);
-      }
+/* ── MODAL ── */
+.moverlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:500;align-items:flex-end;justify-content:center;padding:0;}
+.moverlay.active{display:flex;}
+@media(min-width:640px){.moverlay{align-items:center;padding:20px;}}
+.modal{background:var(--navy2);border:1px solid var(--border);width:100%;max-height:90vh;overflow-y:auto;border-radius:20px 20px 0 0;}
+@media(min-width:640px){.modal{border-radius:16px;max-width:560px;}}
+.mhead{padding:18px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--navy2);z-index:1;}
+.mtitle{font-size:15px;font-weight:600;}
+.mclose{background:none;border:none;color:var(--muted);font-size:22px;cursor:pointer;padding:4px;}
+.mbody{padding:20px;}
+.mfoot{padding:14px 20px;border-top:1px solid var(--border);display:flex;gap:10px;flex-wrap:wrap;}
 
-      /* ── TOAST ── */
-      .toast-container {
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        z-index: 9999;
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-      }
-      .toast {
-        background: var(--navy2);
-        border: 1px solid var(--border);
-        border-radius: 10px;
-        padding: 14px 18px;
-        min-width: 300px;
-        max-width: 400px;
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        font-size: 13px;
-        animation: slideIn 0.3s ease;
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-      }
-      .toast.success {
-        border-left: 4px solid var(--success);
-      }
-      .toast.error {
-        border-left: 4px solid var(--error);
-      }
-      .toast.info {
-        border-left: 4px solid var(--info);
-      }
-      .toast.warning {
-        border-left: 4px solid var(--warning);
-      }
-      @keyframes slideIn {
-        from {
-          transform: translateX(100%);
-          opacity: 0;
-        }
-        to {
-          transform: translateX(0);
-          opacity: 1;
-        }
-      }
+/* ── FORM FIELDS ── */
+.field{margin-bottom:14px;}
+.field label{display:block;font-size:12px;color:var(--muted);margin-bottom:5px;font-weight:500;}
+.field input,.field select,.field textarea{width:100%;background:var(--navy3);border:1px solid var(--border);border-radius:8px;padding:11px 13px;color:var(--white);font-family:'Outfit',sans-serif;font-size:14px;outline:none;-webkit-appearance:none;}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--gold);}
+.field textarea{resize:vertical;min-height:80px;}
+.field select option{background:var(--navy3);}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+@media(max-width:400px){.grid-2{grid-template-columns:1fr;}}
 
-      /* ── IMAGE PREVIEW ── */
-      .doc-preview {
-        width: 100%;
-        max-height: 300px;
-        object-fit: contain;
-        border-radius: 8px;
-        border: 1px solid var(--border);
-        background: var(--navy3);
-      }
+/* ── SEARCH ── */
+.search-row{display:flex;gap:10px;margin-bottom:16px;}
+.search-row input{flex:1;background:var(--navy2);border:1px solid var(--border);border-radius:8px;padding:10px 14px;color:var(--white);font-family:'Outfit',sans-serif;font-size:14px;outline:none;}
+.search-row input:focus{border-color:var(--gold);}
 
-      /* ── GRID ── */
-      .grid-2 {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 16px;
-      }
-      .grid-3 {
-        display: grid;
-        grid-template-columns: 1fr 1fr 1fr;
-        gap: 16px;
-      }
-      @media (max-width: 900px) {
-        .grid-2,
-        .grid-3 {
-          grid-template-columns: 1fr;
-        }
-        .sidebar {
-          transform: translateX(-100%);
-        }
-        .main {
-          margin-left: 0;
-        }
-      }
+/* ── CHAT ── */
+.chat-layout{display:flex;flex-direction:column;background:var(--navy2);border:1px solid var(--border);border-radius:12px;overflow:hidden;}
+@media(min-width:700px){.chat-layout{flex-direction:row;height:580px;}}
+.chat-users{border-bottom:1px solid var(--border);max-height:220px;overflow-y:auto;}
+@media(min-width:700px){.chat-users{width:260px;border-bottom:none;border-right:1px solid var(--border);max-height:none;flex-shrink:0;}}
+.chat-users-head{padding:12px 14px;border-bottom:1px solid var(--border);font-size:13px;font-weight:600;position:sticky;top:0;background:var(--navy2);}
+.cuser{padding:11px 14px;cursor:pointer;transition:.15s;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;}
+.cuser:hover,.cuser.active{background:var(--navy3);}
+.cuserav{width:34px;height:34px;background:var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--navy);flex-shrink:0;}
+.cuser-name{font-size:12px;font-weight:500;}
+.cuser-last{font-size:11px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:140px;}
+.chat-main{flex:1;display:flex;flex-direction:column;min-height:300px;}
+@media(min-width:700px){.chat-main{min-height:0;}}
+.chat-main-head{padding:12px 14px;border-bottom:1px solid var(--border);font-size:13px;font-weight:600;display:flex;align-items:center;justify-content:space-between;}
+.code-btns{padding:10px 14px;border-bottom:1px solid var(--border);display:flex;gap:6px;flex-wrap:wrap;}
+.btncode{background:rgba(201,168,76,.12);color:var(--gold);border:1px solid rgba(201,168,76,.25);padding:6px 10px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;font-family:'Outfit',sans-serif;}
+.btncode:active{background:var(--gold);color:var(--navy);}
+.chat-msgs{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:8px;-webkit-overflow-scrolling:touch;}
+.msg{max-width:78%;padding:9px 13px;border-radius:12px;font-size:13px;line-height:1.5;word-break:break-word;}
+.msg.user{background:var(--navy3);align-self:flex-start;border-bottom-left-radius:4px;}
+.msg.admin{background:rgba(201,168,76,.12);border:1px solid rgba(201,168,76,.15);align-self:flex-end;border-bottom-right-radius:4px;}
+.msg.code{background:var(--navy);border:1px solid var(--gold);font-family:monospace;font-size:15px;font-weight:700;color:var(--gold);letter-spacing:3px;align-self:flex-end;text-align:center;cursor:pointer;}
+.msg-time{font-size:10px;opacity:.5;margin-top:3px;}
+.chat-inp-row{padding:12px 14px;border-top:1px solid var(--border);display:flex;gap:8px;}
+.chat-inp{flex:1;background:var(--navy3);border:1px solid var(--border);border-radius:8px;padding:10px 12px;color:var(--white);font-family:'Outfit',sans-serif;font-size:13px;outline:none;}
+.chat-inp:focus{border-color:var(--gold);}
 
-      /* ── MISC ── */
-      .empty-state {
-        text-align: center;
-        padding: 48px;
-        color: var(--muted);
-      }
-      .empty-icon {
-        font-size: 40px;
-        margin-bottom: 12px;
-      }
-      .divider {
-        border: none;
-        border-top: 1px solid var(--border);
-        margin: 20px 0;
-      }
-      .text-gold {
-        color: var(--gold);
-      }
-      .text-muted {
-        color: var(--muted);
-      }
-      .text-success {
-        color: var(--success);
-      }
-      .text-error {
-        color: var(--error);
-      }
-      .bold {
-        font-weight: 600;
-      }
-      .section {
-        display: none;
-      }
-      .section.active {
-        display: block;
-      }
-      .info-row {
-        display: flex;
-        justify-content: space-between;
-        padding: 10px 0;
-        border-bottom: 1px solid var(--border);
-        font-size: 13px;
-      }
-      .info-row:last-child {
-        border-bottom: none;
-      }
-      .info-row span:first-child {
-        color: var(--muted);
-      }
-    </style>
-  </head>
-  <body>
-    <!-- LOADER -->
-    <div id="loader">
-      <div class="logo-text">STRATVEX</div>
-      <div class="spinner"></div>
+/* ── INFO ROWS ── */
+.irow{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);font-size:13px;gap:12px;}
+.irow:last-child{border-bottom:none;}
+.irow span:first-child{color:var(--muted);flex-shrink:0;}
+.irow span:last-child{text-align:right;word-break:break-word;}
+
+/* ── DOC PREVIEW ── */
+.doc-preview{width:100%;max-height:240px;object-fit:contain;border-radius:8px;border:1px solid var(--border);background:var(--navy3);display:block;}
+.docs-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-top:12px;}
+
+/* ── TOAST ── */
+.toast-wrap{position:fixed;top:16px;right:16px;z-index:9999;display:flex;flex-direction:column;gap:8px;max-width:calc(100vw - 32px);}
+.toast{background:var(--navy2);border:1px solid var(--border);border-radius:10px;padding:12px 16px;font-size:13px;display:flex;align-items:center;gap:10px;animation:slideIn .3s;box-shadow:0 8px 24px rgba(0,0,0,.4);}
+.toast.success{border-left:4px solid var(--success);}
+.toast.error{border-left:4px solid var(--error);}
+.toast.info{border-left:4px solid var(--info);}
+@keyframes slideIn{from{transform:translateX(110%);opacity:0;}to{transform:translateX(0);opacity:1;}}
+
+/* ── EMPTY STATE ── */
+.empty{text-align:center;padding:40px 20px;color:var(--muted);}
+.empty-icon{font-size:36px;margin-bottom:10px;}
+
+/* ── MISC ── */
+.section{display:none;}.section.active{display:block;}
+.divider{border:none;border-top:1px solid var(--border);margin:16px 0;}
+.text-gold{color:var(--gold);}
+.text-muted{color:var(--muted);}
+.text-success{color:var(--success);}
+.text-error{color:var(--error);}
+.bold{font-weight:600;}
+.tab-btns{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;}
+</style>
+</head>
+<body>
+
+<!-- LOADER -->
+<div id="loader">
+  <div class="llogo"><span>STRAT</span><span>VEX</span></div>
+  <div class="lspin"></div>
+</div>
+
+<!-- LOGIN -->
+<div id="login-page">
+  <div class="login-box">
+    <div class="login-logo"><span>STRAT</span><span>VEX</span></div>
+    <div class="login-sub">Admin Control Panel</div>
+    <div class="fi"><label>Username</label><input type="text" id="lu" placeholder="Enter username" autocomplete="username"/></div>
+    <div class="fi"><label>Password</label><input type="password" id="lp" placeholder="Enter password" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()"/></div>
+    <button class="btn-gold" onclick="doLogin()">Sign In</button>
+    <div class="lerr" id="lerr"></div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <!-- Sidebar overlay -->
+  <div class="sidebar-overlay" id="sOverlay" onclick="closeSidebar()"></div>
+
+  <!-- SIDEBAR -->
+  <div class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-logo"><span>STRAT</span><span>VEX</span></div>
+      <button class="sidebar-close" onclick="closeSidebar()">✕</button>
     </div>
+    <div class="sidebar-user">
+      <div class="sadmin-av" id="sadminAv">A</div>
+      <div><div class="sadmin-name" id="sadminName">Admin</div><div class="sadmin-role">Administrator</div></div>
+    </div>
+    <nav class="snav">
+      <div class="snav-section">Overview</div>
+      <div class="nitem active" onclick="go('dashboard')"><span class="ni">📊</span>Dashboard</div>
+      <div class="snav-section">Approvals</div>
+      <div class="nitem" onclick="go('deposits')"><span class="ni">💵</span>Deposits<span class="nbadge" id="b-deposits" style="display:none">0</span></div>
+      <div class="nitem" onclick="go('withdrawals')"><span class="ni">💸</span>Withdrawals<span class="nbadge" id="b-withdrawals" style="display:none">0</span></div>
+      <div class="nitem" onclick="go('investments')"><span class="ni">📈</span>Investments<span class="nbadge" id="b-investments" style="display:none">0</span></div>
+      <div class="nitem" onclick="go('profit-withdrawals')"><span class="ni">💰</span>Profit Requests</div>
+      <div class="nitem" onclick="go('transfers')"><span class="ni">🔄</span>Transfers</div>
+      <div class="nitem" onclick="go('loans')"><span class="ni">🏦</span>Loans<span class="nbadge" id="b-loans" style="display:none">0</span></div>
+      <div class="snav-section">Users</div>
+      <div class="nitem" onclick="go('users')"><span class="ni">👥</span>All Users</div>
+      <div class="nitem" onclick="go('kyc')"><span class="ni">🪪</span>KYC Review<span class="nbadge" id="b-kyc" style="display:none">0</span></div>
+      <div class="nitem" onclick="go('cards')"><span class="ni">💳</span>Virtual Cards<span class="nbadge" id="b-cards" style="display:none">0</span></div>
+      <div class="nitem" onclick="go('irs')"><span class="ni">🧾</span>IRS Requests<span class="nbadge" id="b-irs" style="display:none">0</span></div>
+      <div class="snav-section">Communication</div>
+      <div class="nitem" onclick="go('admin-chat')"><span class="ni">💬</span>Admin Chat<span class="nbadge gold" id="b-adminChat" style="display:none">0</span></div>
+      <div class="nitem" onclick="go('support-chat')"><span class="ni">🎧</span>Support Chat<span class="nbadge gold" id="b-supportChat" style="display:none">0</span></div>
+      <div class="nitem" onclick="go('tickets')"><span class="ni">🎫</span>Tickets<span class="nbadge" id="b-tickets" style="display:none">0</span></div>
+      <div class="nitem" onclick="go('broadcast')"><span class="ni">📢</span>Broadcast</div>
+      <div class="snav-section">Data</div>
+      <div class="nitem" onclick="go('transactions')"><span class="ni">📋</span>Transactions</div>
+      <div class="nitem" onclick="go('savings')"><span class="ni">🏧</span>Savings</div>
+      <div class="nitem" onclick="go('crypto')"><span class="ni">₿</span>Crypto Prices</div>
+      <div class="nitem" onclick="go('inv-plans')"><span class="ni">🎯</span>Inv. Plans</div>
+      <div class="nitem" onclick="go('activity')"><span class="ni">📝</span>Activity Log</div>
+    </nav>
+    <div class="sidebar-foot">
+      <div class="logout-btn" onclick="logout()">🚪 Sign Out</div>
+    </div>
+  </div>
 
-    <!-- LOGIN PAGE -->
-    <div id="login-page">
-      <div class="login-box">
-        <div class="login-logo">⚡ STRATVEX</div>
-        <div class="login-sub">Admin Control Panel</div>
-        <div class="field">
-          <label>Username</label>
-          <input type="text" id="login-username" placeholder="Enter username" />
-        </div>
-        <div class="field">
-          <label>Password</label>
-          <input
-            type="password"
-            id="login-password"
-            placeholder="Enter password"
-            onkeydown="if (event.key === 'Enter') adminLogin();"
-          />
-        </div>
-        <button class="btn-gold" onclick="adminLogin()">
-          Sign In to Admin Panel
-        </button>
-        <div
-          id="login-error"
-          style="
-            color: var(--error);
-            text-align: center;
-            margin-top: 12px;
-            font-size: 13px;
-            display: none;
-          "
-        ></div>
+  <!-- MAIN -->
+  <div class="main">
+    <div class="topbar">
+      <div class="topbar-left">
+        <button class="hamburger" onclick="openSidebar()"><span></span><span></span><span></span></button>
+        <div class="page-title" id="pageTitle">Dashboard</div>
       </div>
+      <div class="topbar-time" id="tclock"></div>
     </div>
+    <div class="content">
 
-    <!-- APP -->
-    <div id="app">
-      <!-- SIDEBAR -->
-      <div class="sidebar" id="sidebar">
-        <div class="sidebar-header">
-          <div class="sidebar-logo">⚡ STRATVEX</div>
-          <div class="sidebar-role">Admin Panel</div>
+      <!-- DASHBOARD -->
+      <div class="section active" id="sec-dashboard">
+        <div class="stats-grid" id="statsGrid"></div>
+        <div class="tcard">
+          <div class="tcard-head"><span class="tcard-title">Recent Users</span></div>
+          <div class="twrap"><table><thead><tr><th>Name</th><th>Balance</th><th>KYC</th></tr></thead><tbody id="dash-users"></tbody></table></div>
         </div>
-        <nav class="sidebar-nav">
-          <div class="nav-section">Overview</div>
-          <div class="nav-item active" onclick="showSection('dashboard')">
-            <span class="icon">📊</span> Dashboard
-          </div>
+        <div class="tcard">
+          <div class="tcard-head"><span class="tcard-title">Recent Transactions</span></div>
+          <div class="twrap"><table><thead><tr><th>User</th><th>Type</th><th>Amount</th><th>Status</th></tr></thead><tbody id="dash-txns"></tbody></table></div>
+        </div>
+      </div>
 
-          <div class="nav-section">Approvals</div>
-          <div class="nav-item" onclick="showSection('deposits')">
-            <span class="icon">💵</span> Deposits
-            <span class="badge" id="b-deposits">0</span>
-          </div>
-          <div class="nav-item" onclick="showSection('withdrawals')">
-            <span class="icon">💸</span> Withdrawals
-            <span class="badge" id="b-withdrawals">0</span>
-          </div>
-          <div class="nav-item" onclick="showSection('investments')">
-            <span class="icon">📈</span> Investments
-            <span class="badge" id="b-investments">0</span>
-          </div>
-          <div class="nav-item" onclick="showSection('profit-withdrawals')">
-            <span class="icon">💰</span> Profit Requests
-          </div>
-          <div class="nav-item" onclick="showSection('transfers')">
-            <span class="icon">🔄</span> Transfers
-          </div>
-          <div class="nav-item" onclick="showSection('loans')">
-            <span class="icon">🏦</span> Loans
-            <span class="badge" id="b-loans">0</span>
-          </div>
+      <!-- USERS -->
+      <div class="section" id="sec-users">
+        <div class="search-row"><input type="text" id="userSearch" placeholder="Search name, email, account..." oninput="searchUsers()"/></div>
+        <div class="tcard">
+          <div class="tcard-head"><span class="tcard-title">All Users</span><button class="btn btn-primary btn-sm" onclick="openModal('transferBetweenModal')">Transfer Between Users</button></div>
+          <div class="twrap"><table><thead><tr><th>Name</th><th>Account</th><th>Balance</th><th>KYC</th><th>Status</th><th></th></tr></thead><tbody id="users-tbody"></tbody></table></div>
+        </div>
+      </div>
 
-          <div class="nav-section">Users</div>
-          <div class="nav-item" onclick="showSection('users')">
-            <span class="icon">👥</span> All Users
-          </div>
-          <div class="nav-item" onclick="showSection('kyc')">
-            <span class="icon">🪪</span> KYC Review
-            <span class="badge" id="b-kyc">0</span>
-          </div>
-          <div class="nav-item" onclick="showSection('cards')">
-            <span class="icon">💳</span> Virtual Cards
-            <span class="badge" id="b-cards">0</span>
-          </div>
-          <div class="nav-item" onclick="showSection('irs')">
-            <span class="icon">🧾</span> IRS Requests
-            <span class="badge" id="b-irs">0</span>
-          </div>
+      <!-- DEPOSITS -->
+      <div class="section" id="sec-deposits">
+        <div class="tcard">
+          <div class="tcard-head"><span class="tcard-title">Deposit Requests</span><button class="btn btn-ghost btn-sm" onclick="loadDeposits()">Refresh</button></div>
+          <div class="twrap"><table><thead><tr><th>User</th><th>Amount</th><th>Date</th><th>Status</th><th></th></tr></thead><tbody id="deposits-tbody"></tbody></table></div>
+        </div>
+      </div>
 
-          <div class="nav-section">Communication</div>
-          <div class="nav-item" onclick="showSection('admin-chat')">
-            <span class="icon">💬</span> Admin Chat
-            <span class="badge gold" id="b-adminChat">0</span>
-          </div>
-          <div class="nav-item" onclick="showSection('support-chat')">
-            <span class="icon">🎧</span> Support Chat
-            <span class="badge gold" id="b-supportChat">0</span>
-          </div>
-          <div class="nav-item" onclick="showSection('tickets')">
-            <span class="icon">🎫</span> Tickets
-            <span class="badge" id="b-tickets">0</span>
-          </div>
-          <div class="nav-item" onclick="showSection('broadcast')">
-            <span class="icon">📢</span> Broadcast
-          </div>
+      <!-- WITHDRAWALS -->
+      <div class="section" id="sec-withdrawals">
+        <div class="tcard">
+          <div class="tcard-head"><span class="tcard-title">Withdrawals</span><button class="btn btn-ghost btn-sm" onclick="loadWithdrawals()">Refresh</button></div>
+          <div class="twrap"><table><thead><tr><th>User</th><th>Amount</th><th>Account</th><th>Date</th><th>Status</th><th></th></tr></thead><tbody id="withdrawals-tbody"></tbody></table></div>
+        </div>
+      </div>
 
-          <div class="nav-section">Data</div>
-          <div class="nav-item" onclick="showSection('transactions')">
-            <span class="icon">📋</span> Transactions
+      <!-- INVESTMENTS -->
+      <div class="section" id="sec-investments">
+        <div class="tcard">
+          <div class="tcard-head"><span class="tcard-title">Investment Requests</span><button class="btn btn-ghost btn-sm" onclick="loadInvestments()">Refresh</button></div>
+          <div class="twrap"><table><thead><tr><th>User</th><th>Plan</th><th>Amount</th><th>Return</th><th>Status</th><th></th></tr></thead><tbody id="investments-tbody"></tbody></table></div>
+        </div>
+      </div>
+
+      <!-- PROFIT WITHDRAWALS -->
+      <div class="section" id="sec-profit-withdrawals">
+        <div class="tcard">
+          <div class="tcard-head"><span class="tcard-title">Profit Withdrawal Requests</span><button class="btn btn-ghost btn-sm" onclick="loadProfitWithdrawals()">Refresh</button></div>
+          <div class="twrap"><table><thead><tr><th>User</th><th>Plan</th><th>Amount</th><th>Date</th><th>Status</th><th></th></tr></thead><tbody id="profit-tbody"></tbody></table></div>
+        </div>
+      </div>
+
+      <!-- TRANSFERS -->
+      <div class="section" id="sec-transfers">
+        <div class="tab-btns">
+          <button class="btn btn-primary" onclick="showTTab('local')">Local</button>
+          <button class="btn btn-ghost" onclick="showTTab('intl')">International</button>
+        </div>
+        <div id="ttab-local">
+          <div class="tcard"><div class="tcard-head"><span class="tcard-title">Local Transfers</span></div><div class="twrap"><table><thead><tr><th>Sender</th><th>Recipient</th><th>Amount</th><th>Status</th><th></th></tr></thead><tbody id="local-tbody"></tbody></table></div></div>
+        </div>
+        <div id="ttab-intl" style="display:none;">
+          <div class="tcard"><div class="tcard-head"><span class="tcard-title">International Transfers</span></div><div class="twrap"><table><thead><tr><th>User</th><th>Method</th><th>Amount</th><th>Status</th><th></th></tr></thead><tbody id="intl-tbody"></tbody></table></div></div>
+        </div>
+      </div>
+
+      <!-- LOANS -->
+      <div class="section" id="sec-loans">
+        <div class="tcard">
+          <div class="tcard-head"><span class="tcard-title">Loan Applications</span><button class="btn btn-ghost btn-sm" onclick="loadLoans()">Refresh</button></div>
+          <div class="twrap"><table><thead><tr><th>User</th><th>Type</th><th>Amount</th><th>Duration</th><th>Status</th><th></th></tr></thead><tbody id="loans-tbody"></tbody></table></div>
+        </div>
+      </div>
+
+      <!-- KYC -->
+      <div class="section" id="sec-kyc">
+        <div class="tcard">
+          <div class="tcard-head"><span class="tcard-title">KYC Submissions</span><button class="btn btn-ghost btn-sm" onclick="loadKyc()">Refresh</button></div>
+          <div class="twrap"><table><thead><tr><th>User</th><th>Document</th><th>Date</th><th>Status</th><th></th></tr></thead><tbody id="kyc-tbody"></tbody></table></div>
+        </div>
+      </div>
+
+      <!-- CARDS -->
+      <div class="section" id="sec-cards">
+        <div class="tcard">
+          <div class="tcard-head"><span class="tcard-title">Virtual Card Applications</span><button class="btn btn-ghost btn-sm" onclick="loadCards()">Refresh</button></div>
+          <div class="twrap"><table><thead><tr><th>User</th><th>Cardholder</th><th>Date</th><th>Status</th><th></th></tr></thead><tbody id="cards-tbody"></tbody></table></div>
+        </div>
+      </div>
+
+      <!-- IRS -->
+      <div class="section" id="sec-irs">
+        <div class="tcard">
+          <div class="tcard-head"><span class="tcard-title">IRS Tax Refund Requests</span><button class="btn btn-ghost btn-sm" onclick="loadIrs()">Refresh</button></div>
+          <div class="twrap"><table><thead><tr><th>User</th><th>Full Name</th><th>SSN</th><th>Date</th><th>Status</th><th></th></tr></thead><tbody id="irs-tbody"></tbody></table></div>
+        </div>
+      </div>
+
+      <!-- ADMIN CHAT -->
+      <div class="section" id="sec-admin-chat">
+        <div class="chat-layout">
+          <div class="chat-users">
+            <div class="chat-users-head">💬 Money Chat</div>
+            <div id="adminChatList"></div>
           </div>
-          <div class="nav-item" onclick="showSection('savings')">
-            <span class="icon">🏧</span> Savings
-          </div>
-          <div class="nav-item" onclick="showSection('crypto')">
-            <span class="icon">₿</span> Crypto Prices
-          </div>
-          <div class="nav-item" onclick="showSection('inv-plans')">
-            <span class="icon">🎯</span> Inv. Plans
-          </div>
-          <div class="nav-item" onclick="showSection('activity')">
-            <span class="icon">📝</span> Activity Log
-          </div>
-        </nav>
-        <div class="sidebar-footer">
-          <div class="admin-info">
-            <div class="admin-avatar" id="adminAvatar">A</div>
-            <div>
-              <div class="admin-name" id="adminName">Admin</div>
-              <div class="admin-logout" onclick="logout()">Sign out</div>
+          <div class="chat-main" id="adminChatMain">
+            <div class="chat-main-head">
+              <span id="adminChatTitle">Select a user</span>
+              <button class="btn btn-ghost btn-sm" id="adminChatBackBtn" style="display:none;" onclick="hideChatMain('admin')">← Back</button>
+            </div>
+            <div class="code-btns" id="adminCodeBtns" style="display:none;">
+              <button class="btncode" onclick="genCode('withdrawal_token')">⚡ Gen Token</button>
+              <button class="btncode" onclick="genCode('winner_code')">🏆 Winner Code</button>
+              <button class="btncode" onclick="genCode('state_pin')">🔐 State Pin</button>
+            </div>
+            <div class="chat-msgs" id="adminChatMsgs"><div class="empty"><div class="empty-icon">💬</div><div>Select a user</div></div></div>
+            <div class="chat-inp-row" id="adminChatInpRow" style="display:none;">
+              <input class="chat-inp" id="adminChatInp" placeholder="Type a message..." onkeydown="if(event.key==='Enter')sendAdminMsg()"/>
+              <button class="btn btn-primary" onclick="sendAdminMsg()">Send</button>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- MAIN -->
-      <div class="main">
-        <div class="topbar">
-          <div class="page-title" id="pageTitle">Dashboard</div>
-          <div class="topbar-right">
-            <div class="topbar-time" id="topbarTime"></div>
+      <!-- SUPPORT CHAT -->
+      <div class="section" id="sec-support-chat">
+        <div class="chat-layout">
+          <div class="chat-users">
+            <div class="chat-users-head">🎧 Support Chat</div>
+            <div id="supportChatList"></div>
           </div>
-        </div>
-        <div class="content">
-          <!-- ── DASHBOARD ── -->
-          <div class="section active" id="sec-dashboard">
-            <div class="stats-grid" id="statsGrid"></div>
-            <div class="grid-2">
-              <div class="table-card">
-                <div class="table-header">
-                  <span class="table-title">Recent Users</span>
-                </div>
-                <div class="table-wrap">
-                  <table>
-                    <thead>
-                      <tr>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Balance</th>
-                        <th>KYC</th>
-                      </tr>
-                    </thead>
-                    <tbody id="dash-users"></tbody>
-                  </table>
-                </div>
-              </div>
-              <div class="table-card">
-                <div class="table-header">
-                  <span class="table-title">Recent Transactions</span>
-                </div>
-                <div class="table-wrap">
-                  <table>
-                    <thead>
-                      <tr>
-                        <th>User</th>
-                        <th>Type</th>
-                        <th>Amount</th>
-                        <th>Status</th>
-                      </tr>
-                    </thead>
-                    <tbody id="dash-txns"></tbody>
-                  </table>
-                </div>
-              </div>
+          <div class="chat-main" id="supportChatMain">
+            <div class="chat-main-head">
+              <span id="supportChatTitle">Select a user</span>
+              <button class="btn btn-ghost btn-sm" id="supportChatBackBtn" style="display:none;" onclick="hideChatMain('support')">← Back</button>
+            </div>
+            <div class="chat-msgs" id="supportChatMsgs"><div class="empty"><div class="empty-icon">🎧</div><div>Select a user</div></div></div>
+            <div class="chat-inp-row" id="supportChatInpRow" style="display:none;">
+              <input class="chat-inp" id="supportChatInp" placeholder="Type a reply..." onkeydown="if(event.key==='Enter')sendSupportMsg()"/>
+              <button class="btn btn-primary" onclick="sendSupportMsg()">Send</button>
             </div>
           </div>
-
-          <!-- ── USERS ── -->
-          <div class="section" id="sec-users">
-            <div class="search-bar">
-              <input
-                type="text"
-                id="userSearch"
-                placeholder="Search by name, email, username, account number..."
-                oninput="searchUsers()"
-              />
-            </div>
-            <div class="table-card">
-              <div class="table-header">
-                <span class="table-title">All Users</span
-                ><button
-                  class="btn btn-primary"
-                  onclick="openTransferBetweenModal()"
-                >
-                  Transfer Between Users
-                </button>
-              </div>
-              <div class="table-wrap">
-                <table>
-                  <thead>
-                    <tr>
-                      <th>Name</th>
-                      <th>Email</th>
-                      <th>Account #</th>
-                      <th>Currency</th>
-                      <th>Balance</th>
-                      <th>KYC</th>
-                      <th>Status</th>
-                      <th>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody id="users-tbody"></tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-
-          <!-- ── DEPOSITS ── -->
-          <div class="section" id="sec-deposits">
-            <div class="table-card">
-              <div class="table-header">
-                <span class="table-title">Deposit Requests</span
-                ><button class="btn btn-primary" onclick="loadDeposits()">
-                  Refresh
-                </button>
-              </div>
-              <div class="table-wrap">
-                <table>
-                  <thead>
-                    <tr>
-                      <th>User</th>
-                      <th>Amount</th>
-                      <th>Currency</th>
-                      <th>Date</th>
-                      <th>Status</th>
-                      <th>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody id="deposits-tbody"></tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-
-          <!-- ── WITHDRAWALS ── -->
-          <div class="section" id="sec-withdrawals">
-            <div class="table-card">
-              <div class="table-header">
-                <span class="table-title">Withdrawal Requests</span
-                ><button class="btn btn-primary" onclick="loadWithdrawals()">
-                  Refresh
-                </button>
-              </div>
-              <div class="table-wrap">
-                <table>
-                  <thead>
-                    <tr>
-                      <th>User</th>
-                      <th>Amount</th>
-                      <th>Account</th>
-                      <th>Account Name</th>
-                      <th>Type</th>
-                      <th>Date</th>
-                      <th>Status</th>
-                      <th>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody id="withdrawals-tbody"></tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-
-          <!-- ── INVESTMENTS ── -->
-          <div class="section" id="sec-investments">
-            <div class="table-card">
-              <div class="table-header">
-                <span class="table-title">Investment Requests</span
-                ><button class="btn btn-primary" onclick="loadInvestments()">
-                  Refresh
-                </button>
-              </div>
-              <div class="table-wrap">
-                <table>
-                  <thead>
-                    <tr>
-                      <th>User</th>
-                      <th>Plan</th>
-                      <th>Type</th>
-                      <th>Amount</th>
-                      <th>Return</th>
-                      <th>Profit</th>
-                      <th>Date</th>
-                      <th>Status</th>
-                      <th>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody id="investments-tbody"></tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-
-          <!-- ── PROFIT WITHDRAWALS ── -->
-          <div class="section" id="sec-profit-withdrawals">
-            <div class="table-card">
-              <div class="table-header">
-                <span class="table-title">Profit Withdrawal Requests</span
-                ><button
-                  class="btn btn-primary"
-                  onclick="loadProfitWithdrawals()"
-                >
-                  Refresh
-                </button>
-              </div>
-              <div class="table-wrap">
-                <table>
-                  <thead>
-                    <tr>
-                      <th>User</th>
-                      <th>Plan</th>
-                      <th>Amount</th>
-                      <th>Date</th>
-                      <th>Status</th>
-                      <th>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody id="profit-tbody"></tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-
-          <!-- ── TRANSFERS ── -->
-          <div class="section" id="sec-transfers">
-            <div style="display: flex; gap: 10px; margin-bottom: 16px">
-              <button
-                class="btn btn-primary"
-                onclick="showTransferTab('local')"
-              >
-                Local Transfers
-              </button>
-              <button
-                class="btn"
-                style="
-                  background: var(--navy3);
-                  border: 1px solid var(--border);
-                "
-                onclick="showTransferTab('intl')"
-              >
-                International
-              </button>
-            </div>
-            <div id="tab-local">
-              <div class="table-card">
-                <div class="table-header">
-                  <span class="table-title">Local Transfers</span>
-                </div>
-                <div class="table-wrap">
-                  <table>
-                    <thead>
-                      <tr>
-                        <th>Sender</th>
-                        <th>Recipient</th>
-                        <th>Amount</th>
-                        <th>Type</th>
-                        <th>Date</th>
-                        <th>Status</th>
-                        <th>Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody id="local-transfers-tbody"></tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
-            <div id="tab-intl" style="display: none">
-              <div class="table-card">
-                <div class="table-header">
-                  <span class="table-title">International Transfers</span>
-                </div>
-                <div class="table-wrap">
-                  <table>
-                    <thead>
-                      <tr>
-                        <th>User</th>
-                        <th>Method</th>
-                        <th>Recipient</th>
-                        <th>Amount</th>
-                        <th>Country</th>
-                        <th>Date</th>
-                        <th>Status</th>
-                        <th>Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody id="intl-transfers-tbody"></tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- ── LOANS ── -->
-          <div class="section" id="sec-loans">
-            <div class="table-card">
-              <div class="table-header">
-                <span class="table-title">Loan Applications</span
-                ><button class="btn btn-primary" onclick="loadLoans()">
-                  Refresh
-                </button>
-              </div>
-              <div class="table-wrap">
-                <table>
-                  <thead>
-                    <tr>
-                      <th>User</th>
-                      <th>Type</th>
-                      <th>Amount</th>
-                      <th>Duration</th>
-                      <th>Purpose</th>
-                      <th>Date</th>
-                      <th>Status</th>
-                      <th>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody id="loans-tbody"></tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-
-          <!-- ── KYC ── -->
-          <div class="section" id="sec-kyc">
-            <div class="table-card">
-              <div class="table-header">
-                <span class="table-title">KYC Submissions</span
-                ><button class="btn btn-primary" onclick="loadKyc()">
-                  Refresh
-                </button>
-              </div>
-              <div class="table-wrap">
-                <table>
-                  <thead>
-                    <tr>
-                      <th>User</th>
-                      <th>Email</th>
-                      <th>Document</th>
-                      <th>Date</th>
-                      <th>Status</th>
-                      <th>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody id="kyc-tbody"></tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-
-          <!-- ── CARDS ── -->
-          <div class="section" id="sec-cards">
-            <div class="table-card">
-              <div class="table-header">
-                <span class="table-title">Virtual Card Applications</span
-                ><button class="btn btn-primary" onclick="loadCards()">
-                  Refresh
-                </button>
-              </div>
-              <div class="table-wrap">
-                <table>
-                  <thead>
-                    <tr>
-                      <th>User</th>
-                      <th>Email</th>
-                      <th>Cardholder</th>
-                      <th>Date</th>
-                      <th>Status</th>
-                      <th>Card #</th>
-                      <th>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody id="cards-tbody"></tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-
-          <!-- ── IRS ── -->
-          <div class="section" id="sec-irs">
-            <div class="table-card">
-              <div class="table-header">
-                <span class="table-title">IRS Tax Refund Requests</span
-                ><button class="btn btn-primary" onclick="loadIrs()">
-                  Refresh
-                </button>
-              </div>
-              <div class="table-wrap">
-                <table>
-                  <thead>
-                    <tr>
-                      <th>User</th>
-                      <th>Full Name</th>
-                      <th>SSN</th>
-                      <th>ID.me Email</th>
-                      <th>Country</th>
-                      <th>Date</th>
-                      <th>Status</th>
-                      <th>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody id="irs-tbody"></tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-
-          <!-- ── ADMIN CHAT ── -->
-          <div class="section" id="sec-admin-chat">
-            <div class="chat-layout">
-              <div class="chat-users">
-                <div class="chat-users-header">💬 Money Chat</div>
-                <div id="adminChatUsersList"></div>
-              </div>
-              <div class="chat-main" id="adminChatMain">
-                <div class="chat-main-header">
-                  <span
-                    id="adminChatTitle"
-                    style="font-size: 14px; font-weight: 600"
-                    >Select a user</span
-                  >
-                </div>
-                <div
-                  class="code-btns"
-                  id="adminChatCodeBtns"
-                  style="display: none"
-                >
-                  <button
-                    class="btn-code"
-                    onclick="generateCode('withdrawal_token')"
-                  >
-                    ⚡ Gen Token
-                  </button>
-                  <button
-                    class="btn-code"
-                    onclick="generateCode('winner_code')"
-                  >
-                    🏆 Gen Winner Code
-                  </button>
-                  <button class="btn-code" onclick="generateCode('state_pin')">
-                    🔐 Gen State Pin
-                  </button>
-                </div>
-                <div class="chat-messages" id="adminChatMessages">
-                  <div class="empty-state">
-                    <div class="empty-icon">💬</div>
-                    <div>Select a user to view chat</div>
-                  </div>
-                </div>
-                <div
-                  class="chat-input-area"
-                  id="adminChatInputArea"
-                  style="display: none"
-                >
-                  <input
-                    class="chat-input"
-                    id="adminChatInput"
-                    placeholder="Type a message..."
-                    onkeydown="if (event.key === 'Enter') sendAdminMessage();"
-                  />
-                  <button class="btn btn-primary" onclick="sendAdminMessage()">
-                    Send
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- ── SUPPORT CHAT ── -->
-          <div class="section" id="sec-support-chat">
-            <div class="chat-layout">
-              <div class="chat-users">
-                <div class="chat-users-header">🎧 Support Chat</div>
-                <div id="supportChatUsersList"></div>
-              </div>
-              <div class="chat-main">
-                <div class="chat-main-header">
-                  <span
-                    id="supportChatTitle"
-                    style="font-size: 14px; font-weight: 600"
-                    >Select a user</span
-                  >
-                </div>
-                <div class="chat-messages" id="supportChatMessages">
-                  <div class="empty-state">
-                    <div class="empty-icon">🎧</div>
-                    <div>Select a user to view chat</div>
-                  </div>
-                </div>
-                <div
-                  class="chat-input-area"
-                  id="supportChatInputArea"
-                  style="display: none"
-                >
-                  <input
-                    class="chat-input"
-                    id="supportChatInput"
-                    placeholder="Type a reply..."
-                    onkeydown="if (event.key === 'Enter') sendSupportMessage();"
-                  />
-                  <button
-                    class="btn btn-primary"
-                    onclick="sendSupportMessage()"
-                  >
-                    Send
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- ── TICKETS ── -->
-          <div class="section" id="sec-tickets">
-            <div class="table-card">
-              <div class="table-header">
-                <span class="table-title">Support Tickets</span
-                ><button class="btn btn-primary" onclick="loadTickets()">
-                  Refresh
-                </button>
-              </div>
-              <div class="table-wrap">
-                <table>
-                  <thead>
-                    <tr>
-                      <th>User</th>
-                      <th>Title</th>
-                      <th>Priority</th>
-                      <th>Date</th>
-                      <th>Status</th>
-                      <th>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody id="tickets-tbody"></tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-
-          <!-- ── BROADCAST ── -->
-          <div class="section" id="sec-broadcast">
-            <div class="table-card" style="max-width: 600px">
-              <div class="table-header">
-                <span class="table-title">📢 Send Broadcast</span>
-              </div>
-              <div style="padding: 24px">
-                <div class="field">
-                  <label>Title</label
-                  ><input
-                    type="text"
-                    id="bc-title"
-                    placeholder="Broadcast title"
-                  />
-                </div>
-                <div class="field">
-                  <label>Message</label
-                  ><textarea
-                    id="bc-message"
-                    placeholder="Enter your broadcast message..."
-                    rows="5"
-                  ></textarea>
-                </div>
-                <button
-                  class="btn btn-primary"
-                  style="width: 100%; padding: 12px"
-                  onclick="sendBroadcast()"
-                >
-                  Send to All Active Users
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <!-- ── TRANSACTIONS ── -->
-          <div class="section" id="sec-transactions">
-            <div class="table-card">
-              <div class="table-header">
-                <span class="table-title">All Transactions</span
-                ><button class="btn btn-primary" onclick="loadTransactions()">
-                  Refresh
-                </button>
-              </div>
-              <div class="table-wrap">
-                <table>
-                  <thead>
-                    <tr>
-                      <th>User</th>
-                      <th>Type</th>
-                      <th>Amount</th>
-                      <th>Currency</th>
-                      <th>Description</th>
-                      <th>Date</th>
-                      <th>Status</th>
-                    </tr>
-                  </thead>
-                  <tbody id="transactions-tbody"></tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-
-          <!-- ── SAVINGS ── -->
-          <div class="section" id="sec-savings">
-            <div class="table-card">
-              <div class="table-header">
-                <span class="table-title">Savings Investments</span
-                ><button class="btn btn-primary" onclick="loadSavings()">
-                  Refresh
-                </button>
-              </div>
-              <div class="table-wrap">
-                <table>
-                  <thead>
-                    <tr>
-                      <th>User</th>
-                      <th>Plan</th>
-                      <th>Amount</th>
-                      <th>Interest</th>
-                      <th>Earned</th>
-                      <th>Maturity</th>
-                      <th>Status</th>
-                    </tr>
-                  </thead>
-                  <tbody id="savings-tbody"></tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-
-          <!-- ── CRYPTO PRICES ── -->
-          <div class="section" id="sec-crypto">
-            <div class="table-card">
-              <div class="table-header">
-                <span class="table-title">Crypto Price Manager</span>
-              </div>
-              <div class="table-wrap">
-                <table>
-                  <thead>
-                    <tr>
-                      <th>Symbol</th>
-                      <th>Name</th>
-                      <th>Price (USD)</th>
-                      <th>24h Change %</th>
-                      <th>Trend</th>
-                      <th>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody id="crypto-tbody"></tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-
-          <!-- ── INVESTMENT PLANS ── -->
-          <div class="section" id="sec-inv-plans">
-            <div class="table-card">
-              <div class="table-header">
-                <span class="table-title">Investment Plans</span>
-              </div>
-              <div class="table-wrap">
-                <table>
-                  <thead>
-                    <tr>
-                      <th>Name</th>
-                      <th>Type</th>
-                      <th>Min</th>
-                      <th>Max</th>
-                      <th>Return %</th>
-                      <th>Profit %</th>
-                      <th>Active</th>
-                      <th>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody id="invplans-tbody"></tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-
-          <!-- ── ACTIVITY LOG ── -->
-          <div class="section" id="sec-activity">
-            <div class="table-card">
-              <div class="table-header">
-                <span class="table-title">Admin Activity Log</span
-                ><button class="btn btn-primary" onclick="loadActivity()">
-                  Refresh
-                </button>
-              </div>
-              <div class="table-wrap">
-                <table>
-                  <thead>
-                    <tr>
-                      <th>Admin</th>
-                      <th>Action</th>
-                      <th>Target</th>
-                      <th>Details</th>
-                      <th>Date</th>
-                    </tr>
-                  </thead>
-                  <tbody id="activity-tbody"></tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-        </div>
-        <!-- /content -->
-      </div>
-      <!-- /main -->
-    </div>
-    <!-- /app -->
-
-    <!-- ── MODALS ── -->
-
-    <!-- User Detail Modal -->
-    <div class="modal-overlay" id="userModal">
-      <div class="modal" style="max-width: 700px">
-        <div class="modal-header">
-          <span class="modal-title">User Details</span
-          ><button class="modal-close" onclick="closeModal('userModal')">
-            ✕
-          </button>
-        </div>
-        <div class="modal-body" id="userModalBody"></div>
-        <div class="modal-footer">
-          <button class="btn btn-approve" onclick="openAddFundsModal()">
-            + Add Funds
-          </button>
-          <button class="btn btn-reject" onclick="openDeductFundsModal()">
-            − Deduct Funds
-          </button>
-          <button
-            class="btn btn-view"
-            id="toggleStatusBtn"
-            onclick="toggleUserStatus()"
-          >
-            Suspend
-          </button>
-          <button class="btn btn-danger" onclick="deleteUser()">Delete</button>
         </div>
       </div>
-    </div>
 
-    <!-- Add Funds Modal -->
-    <div class="modal-overlay" id="addFundsModal">
-      <div class="modal" style="max-width: 420px">
-        <div class="modal-header">
-          <span class="modal-title">Add Funds</span
-          ><button class="modal-close" onclick="closeModal('addFundsModal')">
-            ✕
-          </button>
-        </div>
-        <div class="modal-body">
-          <div class="field">
-            <label>Amount</label
-            ><input
-              type="number"
-              id="addFundsAmount"
-              placeholder="Enter amount"
-            />
-          </div>
-          <div class="field">
-            <label>Note (optional)</label
-            ><input
-              type="text"
-              id="addFundsNote"
-              placeholder="Reason for credit"
-            />
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button class="btn btn-approve" onclick="submitAddFunds()">
-            Add Funds</button
-          ><button
-            class="btn"
-            onclick="closeModal('addFundsModal')"
-            style="background: var(--navy3); border: 1px solid var(--border)"
-          >
-            Cancel
-          </button>
+      <!-- TICKETS -->
+      <div class="section" id="sec-tickets">
+        <div class="tcard">
+          <div class="tcard-head"><span class="tcard-title">Support Tickets</span><button class="btn btn-ghost btn-sm" onclick="loadTickets()">Refresh</button></div>
+          <div class="twrap"><table><thead><tr><th>User</th><th>Title</th><th>Priority</th><th>Status</th><th></th></tr></thead><tbody id="tickets-tbody"></tbody></table></div>
         </div>
       </div>
-    </div>
 
-    <!-- Deduct Funds Modal -->
-    <div class="modal-overlay" id="deductFundsModal">
-      <div class="modal" style="max-width: 420px">
-        <div class="modal-header">
-          <span class="modal-title">Deduct Funds</span
-          ><button class="modal-close" onclick="closeModal('deductFundsModal')">
-            ✕
-          </button>
-        </div>
-        <div class="modal-body">
-          <div class="field">
-            <label>Amount</label
-            ><input
-              type="number"
-              id="deductFundsAmount"
-              placeholder="Enter amount"
-            />
+      <!-- BROADCAST -->
+      <div class="section" id="sec-broadcast">
+        <div class="tcard">
+          <div class="tcard-head"><span class="tcard-title">📢 Send Broadcast</span></div>
+          <div style="padding:20px;">
+            <div class="field"><label>Title</label><input type="text" id="bc-title" placeholder="Broadcast title"/></div>
+            <div class="field"><label>Message</label><textarea id="bc-message" placeholder="Enter message..." rows="4"></textarea></div>
+            <button class="btn btn-primary btn-full" onclick="sendBroadcast()">Send to All Active Users</button>
           </div>
-          <div class="field">
-            <label>Note (optional)</label
-            ><input
-              type="text"
-              id="deductFundsNote"
-              placeholder="Reason for debit"
-            />
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button class="btn btn-reject" onclick="submitDeductFunds()">
-            Deduct Funds</button
-          ><button
-            class="btn"
-            onclick="closeModal('deductFundsModal')"
-            style="background: var(--navy3); border: 1px solid var(--border)"
-          >
-            Cancel
-          </button>
         </div>
       </div>
-    </div>
 
-    <!-- Transfer Between Users Modal -->
-    <div class="modal-overlay" id="transferBetweenModal">
-      <div class="modal" style="max-width: 480px">
-        <div class="modal-header">
-          <span class="modal-title">Transfer Between Users</span
-          ><button
-            class="modal-close"
-            onclick="closeModal('transferBetweenModal')"
-          >
-            ✕
-          </button>
-        </div>
-        <div class="modal-body">
-          <div class="field">
-            <label>From User ID</label
-            ><input type="number" id="tbFromId" placeholder="Source user ID" />
-          </div>
-          <div class="field">
-            <label>To User ID</label
-            ><input
-              type="number"
-              id="tbToId"
-              placeholder="Destination user ID"
-            />
-          </div>
-          <div class="field">
-            <label>Amount</label
-            ><input
-              type="number"
-              id="tbAmount"
-              placeholder="Amount to transfer"
-            />
-          </div>
-          <div class="field">
-            <label>Note (optional)</label
-            ><input type="text" id="tbNote" placeholder="Transfer note" />
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button class="btn btn-primary" onclick="submitTransferBetween()">
-            Transfer</button
-          ><button
-            class="btn"
-            onclick="closeModal('transferBetweenModal')"
-            style="background: var(--navy3); border: 1px solid var(--border)"
-          >
-            Cancel
-          </button>
+      <!-- TRANSACTIONS -->
+      <div class="section" id="sec-transactions">
+        <div class="tcard">
+          <div class="tcard-head"><span class="tcard-title">All Transactions</span><button class="btn btn-ghost btn-sm" onclick="loadTransactions()">Refresh</button></div>
+          <div class="twrap"><table><thead><tr><th>User</th><th>Type</th><th>Amount</th><th>Date</th><th>Status</th></tr></thead><tbody id="transactions-tbody"></tbody></table></div>
         </div>
       </div>
-    </div>
 
-    <!-- Generic Approve Modal -->
-    <div class="modal-overlay" id="approveModal">
-      <div class="modal" style="max-width: 420px">
-        <div class="modal-header">
-          <span class="modal-title" id="approveModalTitle">Approve</span
-          ><button class="modal-close" onclick="closeModal('approveModal')">
-            ✕
-          </button>
-        </div>
-        <div class="modal-body">
-          <div id="approveModalExtra"></div>
-          <div class="field">
-            <label>Admin Note (optional)</label
-            ><textarea id="approveNote" placeholder="Add a note..."></textarea>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button class="btn btn-approve" id="approveModalBtn" onclick="">
-            Approve</button
-          ><button
-            class="btn"
-            onclick="closeModal('approveModal')"
-            style="background: var(--navy3); border: 1px solid var(--border)"
-          >
-            Cancel
-          </button>
+      <!-- SAVINGS -->
+      <div class="section" id="sec-savings">
+        <div class="tcard">
+          <div class="tcard-head"><span class="tcard-title">Savings Investments</span><button class="btn btn-ghost btn-sm" onclick="loadSavings()">Refresh</button></div>
+          <div class="twrap"><table><thead><tr><th>User</th><th>Plan</th><th>Amount</th><th>Interest</th><th>Maturity</th><th>Status</th></tr></thead><tbody id="savings-tbody"></tbody></table></div>
         </div>
       </div>
-    </div>
 
-    <!-- Generic Reject Modal -->
-    <div class="modal-overlay" id="rejectModal">
-      <div class="modal" style="max-width: 420px">
-        <div class="modal-header">
-          <span class="modal-title" id="rejectModalTitle">Reject</span
-          ><button class="modal-close" onclick="closeModal('rejectModal')">
-            ✕
-          </button>
-        </div>
-        <div class="modal-body">
-          <div class="field">
-            <label>Reason for rejection</label
-            ><textarea
-              id="rejectNote"
-              placeholder="Enter rejection reason..."
-            ></textarea>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button class="btn btn-reject" id="rejectModalBtn" onclick="">
-            Reject</button
-          ><button
-            class="btn"
-            onclick="closeModal('rejectModal')"
-            style="background: var(--navy3); border: 1px solid var(--border)"
-          >
-            Cancel
-          </button>
+      <!-- CRYPTO -->
+      <div class="section" id="sec-crypto">
+        <div class="tcard">
+          <div class="tcard-head"><span class="tcard-title">Crypto Price Manager</span></div>
+          <div class="twrap"><table><thead><tr><th>Symbol</th><th>Price</th><th>24h %</th><th>Trend</th><th></th></tr></thead><tbody id="crypto-tbody"></tbody></table></div>
         </div>
       </div>
-    </div>
 
-    <!-- KYC Modal -->
-    <div class="modal-overlay" id="kycModal">
-      <div class="modal" style="max-width: 700px">
-        <div class="modal-header">
-          <span class="modal-title">KYC Review</span
-          ><button class="modal-close" onclick="closeModal('kycModal')">
-            ✕
-          </button>
-        </div>
-        <div class="modal-body" id="kycModalBody"></div>
-        <div class="modal-footer" id="kycModalFooter"></div>
-      </div>
-    </div>
-
-    <!-- Crypto Edit Modal -->
-    <div class="modal-overlay" id="cryptoModal">
-      <div class="modal" style="max-width: 420px">
-        <div class="modal-header">
-          <span class="modal-title" id="cryptoModalTitle">Update Price</span
-          ><button class="modal-close" onclick="closeModal('cryptoModal')">
-            ✕
-          </button>
-        </div>
-        <div class="modal-body">
-          <div class="field">
-            <label>Price (USD)</label
-            ><input type="number" id="cryptoPrice" step="0.01" />
-          </div>
-          <div class="field">
-            <label>24h Change %</label
-            ><input type="number" id="cryptoChange" step="0.01" />
-          </div>
-          <div class="field">
-            <label>Trend</label>
-            <select id="cryptoTrend">
-              <option value="bullish">Bullish</option>
-              <option value="neutral">Neutral</option>
-              <option value="bearish">Bearish</option>
-            </select>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button class="btn btn-primary" id="cryptoSaveBtn">Save</button
-          ><button
-            class="btn"
-            onclick="closeModal('cryptoModal')"
-            style="background: var(--navy3); border: 1px solid var(--border)"
-          >
-            Cancel
-          </button>
+      <!-- INV PLANS -->
+      <div class="section" id="sec-inv-plans">
+        <div class="tcard">
+          <div class="tcard-head"><span class="tcard-title">Investment Plans</span></div>
+          <div class="twrap"><table><thead><tr><th>Name</th><th>Return</th><th>Min</th><th>Active</th><th></th></tr></thead><tbody id="invplans-tbody"></tbody></table></div>
         </div>
       </div>
-    </div>
 
-    <!-- Inv Plan Edit Modal -->
-    <div class="modal-overlay" id="planModal">
-      <div class="modal" style="max-width: 500px">
-        <div class="modal-header">
-          <span class="modal-title">Edit Investment Plan</span
-          ><button class="modal-close" onclick="closeModal('planModal')">
-            ✕
-          </button>
-        </div>
-        <div class="modal-body">
-          <div class="grid-2">
-            <div class="field">
-              <label>Plan Name</label><input type="text" id="planName" />
-            </div>
-            <div class="field">
-              <label>Investment Type</label><input type="text" id="planType" />
-            </div>
-            <div class="field">
-              <label>Min Amount</label><input type="number" id="planMin" />
-            </div>
-            <div class="field">
-              <label>Max Amount</label
-              ><input
-                type="number"
-                id="planMax"
-                placeholder="Leave blank for unlimited"
-              />
-            </div>
-            <div class="field">
-              <label>Return % (total)</label
-              ><input type="number" id="planReturn" step="0.1" />
-            </div>
-            <div class="field">
-              <label>Profit % (gain only)</label
-              ><input type="number" id="planProfit" step="0.1" />
-            </div>
-          </div>
-          <div class="field">
-            <label>Description</label><textarea id="planDesc"></textarea>
-          </div>
-          <div class="field">
-            <label>Active</label
-            ><select id="planActive">
-              <option value="true">Yes</option>
-              <option value="false">No</option>
-            </select>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button class="btn btn-primary" id="planSaveBtn">Save Plan</button
-          ><button
-            class="btn"
-            onclick="closeModal('planModal')"
-            style="background: var(--navy3); border: 1px solid var(--border)"
-          >
-            Cancel
-          </button>
+      <!-- ACTIVITY -->
+      <div class="section" id="sec-activity">
+        <div class="tcard">
+          <div class="tcard-head"><span class="tcard-title">Admin Activity Log</span><button class="btn btn-ghost btn-sm" onclick="loadActivity()">Refresh</button></div>
+          <div class="twrap"><table><thead><tr><th>Admin</th><th>Action</th><th>Details</th><th>Date</th></tr></thead><tbody id="activity-tbody"></tbody></table></div>
         </div>
       </div>
+
+    </div><!-- /content -->
+  </div><!-- /main -->
+</div><!-- /app -->
+
+<!-- ── MODALS ── -->
+
+<!-- User Detail -->
+<div class="moverlay" id="userModal">
+  <div class="modal" style="max-width:640px;">
+    <div class="mhead"><span class="mtitle">User Details</span><button class="mclose" onclick="closeModal('userModal')">✕</button></div>
+    <div class="mbody" id="userModalBody"></div>
+    <div class="mfoot" style="flex-wrap:wrap;">
+      <button class="btn btn-approve" onclick="openModal('addFundsModal')">+ Add Funds</button>
+      <button class="btn btn-reject" onclick="openModal('deductFundsModal')">− Deduct</button>
+      <button class="btn btn-view" id="toggleStatusBtn" onclick="toggleUserStatus()">Suspend</button>
+      <button class="btn btn-danger" onclick="deleteUser()">Delete</button>
+      <button class="btn btn-ghost" onclick="closeModal('userModal')">Close</button>
     </div>
+  </div>
+</div>
 
-    <!-- TOAST CONTAINER -->
-    <div class="toast-container" id="toastContainer"></div>
+<!-- Add Funds -->
+<div class="moverlay" id="addFundsModal">
+  <div class="modal" style="max-width:380px;">
+    <div class="mhead"><span class="mtitle">Add Funds</span><button class="mclose" onclick="closeModal('addFundsModal')">✕</button></div>
+    <div class="mbody">
+      <div class="field"><label>Amount</label><input type="number" id="addFundsAmt" placeholder="Enter amount" inputmode="decimal"/></div>
+      <div class="field"><label>Note (optional)</label><input type="text" id="addFundsNote" placeholder="Reason"/></div>
+    </div>
+    <div class="mfoot">
+      <button class="btn btn-approve btn-full" onclick="submitAddFunds()">Add Funds</button>
+    </div>
+  </div>
+</div>
 
-    <script>
-      const API = "https://stratvex-admin.onrender.com/api"; // ← UPDATE THIS
-      let adminToken = localStorage.getItem("stratvex_admin_token");
-      let adminData = JSON.parse(
-        localStorage.getItem("stratvex_admin_data") || "null",
-      );
-      let currentUserId = null;
-      let currentAdminChatUserId = null;
-      let currentSupportChatUserId = null;
-      let badgeInterval = null;
-      let chatInterval = null;
+<!-- Deduct Funds -->
+<div class="moverlay" id="deductFundsModal">
+  <div class="modal" style="max-width:380px;">
+    <div class="mhead"><span class="mtitle">Deduct Funds</span><button class="mclose" onclick="closeModal('deductFundsModal')">✕</button></div>
+    <div class="mbody">
+      <div class="field"><label>Amount</label><input type="number" id="deductFundsAmt" placeholder="Enter amount" inputmode="decimal"/></div>
+      <div class="field"><label>Note (optional)</label><input type="text" id="deductFundsNote" placeholder="Reason"/></div>
+    </div>
+    <div class="mfoot">
+      <button class="btn btn-reject btn-full" onclick="submitDeductFunds()">Deduct Funds</button>
+    </div>
+  </div>
+</div>
 
-      // ── INIT ──
-      window.addEventListener("DOMContentLoaded", () => {
-        setTimeout(() => {
-          document.getElementById("loader").style.display = "none";
-          if (adminToken && adminData) {
-            startApp();
-          } else {
-            document.getElementById("login-page").classList.add("active");
-          }
-        }, 1200);
-        updateClock();
-        setInterval(updateClock, 1000);
-      });
+<!-- Transfer Between Users -->
+<div class="moverlay" id="transferBetweenModal">
+  <div class="modal" style="max-width:420px;">
+    <div class="mhead"><span class="mtitle">Transfer Between Users</span><button class="mclose" onclick="closeModal('transferBetweenModal')">✕</button></div>
+    <div class="mbody">
+      <div class="grid-2">
+        <div class="field"><label>From User ID</label><input type="number" id="tbFrom" placeholder="User ID" inputmode="numeric"/></div>
+        <div class="field"><label>To User ID</label><input type="number" id="tbTo" placeholder="User ID" inputmode="numeric"/></div>
+      </div>
+      <div class="field"><label>Amount</label><input type="number" id="tbAmt" placeholder="Amount" inputmode="decimal"/></div>
+      <div class="field"><label>Note</label><input type="text" id="tbNote" placeholder="Optional note"/></div>
+    </div>
+    <div class="mfoot">
+      <button class="btn btn-primary btn-full" onclick="submitTransferBetween()">Transfer</button>
+    </div>
+  </div>
+</div>
 
-      function updateClock() {
-        const now = new Date();
-        document.getElementById("topbarTime").textContent = now.toLocaleString(
-          "en-US",
-          {
-            weekday: "short",
-            month: "short",
-            day: "numeric",
-            hour: "2-digit",
-            minute: "2-digit",
-          },
-        );
-      }
+<!-- Approve Modal -->
+<div class="moverlay" id="approveModal">
+  <div class="modal" style="max-width:380px;">
+    <div class="mhead"><span class="mtitle" id="approveModalTitle">Approve</span><button class="mclose" onclick="closeModal('approveModal')">✕</button></div>
+    <div class="mbody">
+      <div id="approveModalExtra"></div>
+      <div class="field"><label>Admin Note (optional)</label><textarea id="approveNote" placeholder="Add a note..."></textarea></div>
+    </div>
+    <div class="mfoot">
+      <button class="btn btn-approve btn-full" id="approveBtn">Approve</button>
+    </div>
+  </div>
+</div>
 
-      // ── AUTH ──
-      async function adminLogin() {
-        const username = document.getElementById("login-username").value.trim();
-        const password = document.getElementById("login-password").value;
-        const errEl = document.getElementById("login-error");
-        errEl.style.display = "none";
+<!-- Reject Modal -->
+<div class="moverlay" id="rejectModal">
+  <div class="modal" style="max-width:380px;">
+    <div class="mhead"><span class="mtitle" id="rejectModalTitle">Reject</span><button class="mclose" onclick="closeModal('rejectModal')">✕</button></div>
+    <div class="mbody">
+      <div class="field"><label>Reason for rejection</label><textarea id="rejectNote" placeholder="Enter reason..."></textarea></div>
+    </div>
+    <div class="mfoot">
+      <button class="btn btn-reject btn-full" id="rejectBtn">Reject</button>
+    </div>
+  </div>
+</div>
 
-        if (!username || !password) {
-          showLoginError("Please enter credentials");
-          return;
-        }
+<!-- KYC Modal -->
+<div class="moverlay" id="kycModal">
+  <div class="modal" style="max-width:640px;">
+    <div class="mhead"><span class="mtitle">KYC Review</span><button class="mclose" onclick="closeModal('kycModal')">✕</button></div>
+    <div class="mbody" id="kycModalBody"></div>
+    <div class="mfoot" id="kycModalFoot"></div>
+  </div>
+</div>
 
-        try {
-          const res = await fetch(`${API}/admin/auth/login`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ username, password }),
-          });
-          const data = await res.json();
-          if (!res.ok) {
-            showLoginError(data.error || "Login failed");
-            return;
-          }
-          adminToken = data.token;
-          adminData = data.admin;
-          localStorage.setItem("stratvex_admin_token", adminToken);
-          localStorage.setItem(
-            "stratvex_admin_data",
-            JSON.stringify(adminData),
-          );
-          startApp();
-        } catch (e) {
-          showLoginError("Connection failed. Check API URL.");
-        }
-      }
+<!-- Crypto Edit Modal -->
+<div class="moverlay" id="cryptoModal">
+  <div class="modal" style="max-width:360px;">
+    <div class="mhead"><span class="mtitle" id="cryptoModalTitle">Update Price</span><button class="mclose" onclick="closeModal('cryptoModal')">✕</button></div>
+    <div class="mbody">
+      <div class="field"><label>Price (USD)</label><input type="number" id="cprice" inputmode="decimal"/></div>
+      <div class="field"><label>24h Change %</label><input type="number" id="cchange" inputmode="decimal"/></div>
+      <div class="field"><label>Trend</label><select id="ctrend"><option value="bullish">Bullish</option><option value="neutral">Neutral</option><option value="bearish">Bearish</option></select></div>
+    </div>
+    <div class="mfoot"><button class="btn btn-primary btn-full" id="cryptoSaveBtn">Save</button></div>
+  </div>
+</div>
 
-      function showLoginError(msg) {
-        const el = document.getElementById("login-error");
-        el.textContent = msg;
-        el.style.display = "block";
-      }
+<!-- Plan Edit Modal -->
+<div class="moverlay" id="planModal">
+  <div class="modal" style="max-width:500px;">
+    <div class="mhead"><span class="mtitle">Edit Investment Plan</span><button class="mclose" onclick="closeModal('planModal')">✕</button></div>
+    <div class="mbody">
+      <div class="grid-2">
+        <div class="field"><label>Plan Name</label><input type="text" id="pName"/></div>
+        <div class="field"><label>Investment Type</label><input type="text" id="pType"/></div>
+        <div class="field"><label>Min Amount</label><input type="number" id="pMin" inputmode="decimal"/></div>
+        <div class="field"><label>Max Amount</label><input type="number" id="pMax" placeholder="Blank = unlimited" inputmode="decimal"/></div>
+        <div class="field"><label>Return % (total)</label><input type="number" id="pReturn" inputmode="decimal"/></div>
+        <div class="field"><label>Profit % (gain)</label><input type="number" id="pProfit" inputmode="decimal"/></div>
+      </div>
+      <div class="field"><label>Description</label><textarea id="pDesc"></textarea></div>
+      <div class="field"><label>Active</label><select id="pActive"><option value="true">Yes</option><option value="false">No</option></select></div>
+    </div>
+    <div class="mfoot"><button class="btn btn-primary btn-full" id="planSaveBtn">Save Plan</button></div>
+  </div>
+</div>
 
-      function startApp() {
-        document.getElementById("login-page").classList.remove("active");
-        document.getElementById("app").classList.add("active");
-        document.getElementById("adminName").textContent =
-          adminData?.username || "Admin";
-        document.getElementById("adminAvatar").textContent =
-          (adminData?.username || "A")[0].toUpperCase();
-        loadDashboard();
-        startBadgePolling();
-      }
+<!-- TOAST -->
+<div class="toast-wrap" id="toastWrap"></div>
 
-      function logout() {
-        adminToken = null;
-        adminData = null;
-        localStorage.removeItem("stratvex_admin_token");
-        localStorage.removeItem("stratvex_admin_data");
-        clearInterval(badgeInterval);
-        clearInterval(chatInterval);
-        document.getElementById("app").classList.remove("active");
-        document.getElementById("login-page").classList.add("active");
-      }
+<script>
+const API = 'https://stratvex-admin.onrender.com/api'; // ← Render backend URL
+let adminToken = localStorage.getItem('stratvex_admin_token');
+let adminData = JSON.parse(localStorage.getItem('stratvex_admin_data')||'null');
+let currentUserId = null;
+let currentAdminChatUserId = null;
+let currentSupportChatUserId = null;
+let badgeTimer = null;
+let chatTimer = null;
+const isMobile = () => window.innerWidth < 700;
 
-      // ── API HELPER ──
-      async function api(path, method = "GET", body = null) {
-        const opts = {
-          method,
-          headers: {
-            Authorization: `Bearer ${adminToken}`,
-            "Content-Type": "application/json",
-          },
-        };
-        if (body) opts.body = JSON.stringify(body);
-        const res = await fetch(`${API}${path}`, opts);
-        if (res.status === 401) {
-          logout();
-          return null;
-        }
-        return await res.json();
-      }
+// ── INIT ──
+window.addEventListener('DOMContentLoaded', () => {
+  setTimeout(() => {
+    document.getElementById('loader').classList.add('hide');
+    if (adminToken && adminData) startApp();
+    else document.getElementById('login-page').classList.add('active');
+  }, 1000);
+  setInterval(() => {
+    const now = new Date();
+    document.getElementById('tclock').textContent = now.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});
+  }, 1000);
+});
 
-      // ── SECTIONS ──
-      function showSection(name) {
-        document
-          .querySelectorAll(".section")
-          .forEach((s) => s.classList.remove("active"));
-        document
-          .querySelectorAll(".nav-item")
-          .forEach((n) => n.classList.remove("active"));
-        document.getElementById(`sec-${name}`).classList.add("active");
-        event.currentTarget.classList.add("active");
+// ── AUTH ──
+async function doLogin() {
+  const username = document.getElementById('lu').value.trim();
+  const password = document.getElementById('lp').value;
+  const errEl = document.getElementById('lerr');
+  errEl.style.display = 'none';
+  if (!username || !password) { showLoginErr('Please enter credentials'); return; }
+  try {
+    const res = await fetch(`${API}/admin/auth/login`, {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({username,password})});
+    const d = await res.json();
+    if (!res.ok) { showLoginErr(d.error||'Login failed'); return; }
+    adminToken = d.token; adminData = d.admin;
+    localStorage.setItem('stratvex_admin_token', adminToken);
+    localStorage.setItem('stratvex_admin_data', JSON.stringify(adminData));
+    startApp();
+  } catch(e) { showLoginErr('Connection failed. Check API URL.'); }
+}
+function showLoginErr(msg) { const e = document.getElementById('lerr'); e.textContent = msg; e.style.display = 'block'; }
+function startApp() {
+  document.getElementById('login-page').classList.remove('active');
+  document.getElementById('app').classList.add('active');
+  document.getElementById('sadminName').textContent = adminData?.username || 'Admin';
+  document.getElementById('sadminAv').textContent = (adminData?.username||'A')[0].toUpperCase();
+  loadDashboard();
+  badgeTimer = setInterval(loadBadges, 15000);
+  loadBadges();
+}
+function logout() {
+  clearInterval(badgeTimer); clearInterval(chatTimer);
+  adminToken = null; adminData = null;
+  localStorage.removeItem('stratvex_admin_token');
+  localStorage.removeItem('stratvex_admin_data');
+  document.getElementById('app').classList.remove('active');
+  document.getElementById('login-page').classList.add('active');
+}
 
-        const titles = {
-          dashboard: "Dashboard",
-          users: "All Users",
-          deposits: "Deposits",
-          withdrawals: "Withdrawals",
-          investments: "Investments",
-          "profit-withdrawals": "Profit Withdrawal Requests",
-          transfers: "Transfers",
-          loans: "Loans",
-          kyc: "KYC Review",
-          cards: "Virtual Cards",
-          irs: "IRS Requests",
-          "admin-chat": "Admin Chat",
-          "support-chat": "Support Chat",
-          tickets: "Support Tickets",
-          broadcast: "Broadcast",
-          transactions: "Transactions",
-          savings: "Savings",
-          crypto: "Crypto Prices",
-          "inv-plans": "Investment Plans",
-          activity: "Activity Log",
-        };
-        document.getElementById("pageTitle").textContent = titles[name] || name;
+// ── API ──
+async function api(path, method='GET', body=null) {
+  const opts = {method, headers:{'Authorization':`Bearer ${adminToken}`,'Content-Type':'application/json'}};
+  if (body) opts.body = JSON.stringify(body);
+  const res = await fetch(`${API}${path}`, opts);
+  if (res.status === 401) { logout(); return null; }
+  return await res.json();
+}
 
-        clearInterval(chatInterval);
-        const loaders = {
-          dashboard: loadDashboard,
-          users: loadUsers,
-          deposits: loadDeposits,
-          withdrawals: loadWithdrawals,
-          investments: loadInvestments,
-          "profit-withdrawals": loadProfitWithdrawals,
-          transfers: loadTransfers,
-          loans: loadLoans,
-          kyc: loadKyc,
-          cards: loadCards,
-          irs: loadIrs,
-          "admin-chat": loadAdminChatUsers,
-          "support-chat": loadSupportChatUsers,
-          tickets: loadTickets,
-          transactions: loadTransactions,
-          savings: loadSavings,
-          crypto: loadCrypto,
-          "inv-plans": loadInvPlans,
-          activity: loadActivity,
-        };
-        if (loaders[name]) loaders[name]();
+// ── SIDEBAR ──
+function openSidebar() {
+  document.getElementById('sidebar').classList.add('open');
+  document.getElementById('sOverlay').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sOverlay').classList.remove('active');
+  document.body.style.overflow = '';
+}
 
-        if (name === "admin-chat" || name === "support-chat") {
-          chatInterval = setInterval(() => {
-            if (name === "admin-chat") {
-              loadAdminChatUsers();
-              if (currentAdminChatUserId)
-                loadAdminChatMessages(currentAdminChatUserId);
-            } else {
-              loadSupportChatUsers();
-              if (currentSupportChatUserId)
-                loadSupportChatMessages(currentSupportChatUserId);
-            }
-          }, 4000);
-        }
-      }
+// ── SECTIONS ──
+function go(name) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nitem').forEach(n => n.classList.remove('active'));
+  document.getElementById(`sec-${name}`)?.classList.add('active');
+  event?.currentTarget?.classList.add('active');
+  const titles = {
+    dashboard:'Dashboard', users:'All Users', deposits:'Deposits',
+    withdrawals:'Withdrawals', investments:'Investments',
+    'profit-withdrawals':'Profit Requests', transfers:'Transfers',
+    loans:'Loans', kyc:'KYC Review', cards:'Virtual Cards', irs:'IRS Requests',
+    'admin-chat':'Admin Chat', 'support-chat':'Support Chat',
+    tickets:'Tickets', broadcast:'Broadcast', transactions:'Transactions',
+    savings:'Savings', crypto:'Crypto Prices', 'inv-plans':'Investment Plans',
+    activity:'Activity Log'
+  };
+  document.getElementById('pageTitle').textContent = titles[name] || name;
+  closeSidebar();
+  clearInterval(chatTimer);
+  const loaders = {
+    dashboard: loadDashboard, users: loadUsers, deposits: loadDeposits,
+    withdrawals: loadWithdrawals, investments: loadInvestments,
+    'profit-withdrawals': loadProfitWithdrawals, transfers: loadTransfers,
+    loans: loadLoans, kyc: loadKyc, cards: loadCards, irs: loadIrs,
+    'admin-chat': () => { loadAdminChatList(); chatTimer = setInterval(() => { loadAdminChatList(); if(currentAdminChatUserId) loadAdminChatMsgs(currentAdminChatUserId); }, 4000); },
+    'support-chat': () => { loadSupportChatList(); chatTimer = setInterval(() => { loadSupportChatList(); if(currentSupportChatUserId) loadSupportChatMsgs(currentSupportChatUserId); }, 4000); },
+    tickets: loadTickets, transactions: loadTransactions,
+    savings: loadSavings, crypto: loadCrypto, 'inv-plans': loadInvPlans,
+    activity: loadActivity
+  };
+  if (loaders[name]) loaders[name]();
+}
 
-      // ── BADGES ──
-      function startBadgePolling() {
-        loadBadges();
-        badgeInterval = setInterval(loadBadges, 15000);
-      }
-      async function loadBadges() {
-        const d = await api("/admin/badge-counts");
-        if (!d) return;
-        const map = {
-          "b-deposits": d.pendingDeposits,
-          "b-withdrawals": d.pendingWithdrawals,
-          "b-kyc": d.pendingKyc,
-          "b-loans": d.pendingLoans,
-          "b-investments": d.pendingInvestments,
-          "b-tickets": d.openTickets,
-          "b-cards": d.pendingCards,
-          "b-irs": d.pendingIrs,
-          "b-adminChat": d.unreadAdminChats,
-          "b-supportChat": d.unreadSupportChats,
-        };
-        Object.entries(map).forEach(([id, val]) => {
-          const el = document.getElementById(id);
-          if (el) {
-            el.textContent = val;
-            el.style.display = val > 0 ? "inline-flex" : "none";
-          }
-        });
-      }
+// ── BADGES ──
+async function loadBadges() {
+  const d = await api('/admin/badge-counts');
+  if (!d) return;
+  const map = {
+    'b-deposits':d.pendingDeposits,'b-withdrawals':d.pendingWithdrawals,
+    'b-kyc':d.pendingKyc,'b-loans':d.pendingLoans,'b-investments':d.pendingInvestments,
+    'b-tickets':d.openTickets,'b-cards':d.pendingCards,'b-irs':d.pendingIrs,
+    'b-adminChat':d.unreadAdminChats,'b-supportChat':d.unreadSupportChats
+  };
+  Object.entries(map).forEach(([id,val]) => {
+    const el = document.getElementById(id);
+    if (el) { el.textContent = val; el.style.display = val > 0 ? 'inline-flex' : 'none'; }
+  });
+}
 
-      // ── DASHBOARD ──
-      async function loadDashboard() {
-        const d = await api("/admin/dashboard");
-        if (!d) return;
-        const s = d.stats;
-        document.getElementById("statsGrid").innerHTML = `
+// ── DASHBOARD ──
+async function loadDashboard() {
+  const d = await api('/admin/dashboard');
+  if (!d) return;
+  const s = d.stats;
+  document.getElementById('statsGrid').innerHTML = `
     <div class="stat-card blue"><div class="stat-label">Total Users</div><div class="stat-value">${s.totalUsers}</div><div class="stat-icon">👥</div></div>
-    <div class="stat-card gold"><div class="stat-label">Total Deposits</div><div class="stat-value">$${fmt(s.totalDeposits)}</div><div class="stat-icon">💵</div></div>
-    <div class="stat-card green"><div class="stat-label">Total Withdrawals</div><div class="stat-value">$${fmt(s.totalWithdrawals)}</div><div class="stat-icon">💸</div></div>
-    <div class="stat-card red"><div class="stat-label">Pending Deposits</div><div class="stat-value">${s.pendingDeposits}</div><div class="stat-icon">⏳</div></div>
-    <div class="stat-card orange"><div class="stat-label">Pending Withdrawals</div><div class="stat-value">${s.pendingWithdrawals}</div><div class="stat-icon">🔄</div></div>
-    <div class="stat-card purple"><div class="stat-label">Pending Investments</div><div class="stat-value">${s.pendingInvestments}</div><div class="stat-icon">📈</div></div>
+    <div class="stat-card gold"><div class="stat-label">Deposits</div><div class="stat-value">$${fmt(s.totalDeposits)}</div><div class="stat-icon">💵</div></div>
+    <div class="stat-card green"><div class="stat-label">Withdrawals</div><div class="stat-value">$${fmt(s.totalWithdrawals)}</div><div class="stat-icon">💸</div></div>
+    <div class="stat-card red"><div class="stat-label">Pending Deps</div><div class="stat-value">${s.pendingDeposits}</div><div class="stat-icon">⏳</div></div>
+    <div class="stat-card orange"><div class="stat-label">Pending Withs</div><div class="stat-value">${s.pendingWithdrawals}</div><div class="stat-icon">🔄</div></div>
+    <div class="stat-card purple"><div class="stat-label">Pending Invs</div><div class="stat-value">${s.pendingInvestments}</div><div class="stat-icon">📈</div></div>
     <div class="stat-card blue"><div class="stat-label">Pending KYC</div><div class="stat-value">${s.pendingKyc}</div><div class="stat-icon">🪪</div></div>
     <div class="stat-card gold"><div class="stat-label">Pending Loans</div><div class="stat-value">${s.pendingLoans}</div><div class="stat-icon">🏦</div></div>
     <div class="stat-card green"><div class="stat-label">Open Tickets</div><div class="stat-value">${s.openTickets}</div><div class="stat-icon">🎫</div></div>
     <div class="stat-card red"><div class="stat-label">Pending Cards</div><div class="stat-value">${s.pendingCards}</div><div class="stat-icon">💳</div></div>
     <div class="stat-card orange"><div class="stat-label">Pending IRS</div><div class="stat-value">${s.pendingIrs}</div><div class="stat-icon">🧾</div></div>
   `;
-        document.getElementById("dash-users").innerHTML =
-          d.recentUsers
-            .map(
-              (u) => `
-    <tr><td>${u.first_name} ${u.last_name}</td><td>${u.email}</td><td>$${fmt(u.balance)}</td><td><span class="status-badge ${u.kyc_status}">${u.kyc_status}</span></td></tr>
-  `,
-            )
-            .join("") ||
-          '<tr><td colspan="4" class="empty-state">No users yet</td></tr>';
-        document.getElementById("dash-txns").innerHTML =
-          d.recentTransactions
-            .map(
-              (t) => `
-    <tr><td>${t.first_name} ${t.last_name}</td><td>${t.type}</td><td>$${fmt(t.amount)}</td><td><span class="status-badge ${t.status}">${t.status}</span></td></tr>
-  `,
-            )
-            .join("") ||
-          '<tr><td colspan="4" class="empty-state">No transactions</td></tr>';
-      }
+  document.getElementById('dash-users').innerHTML = d.recentUsers.map(u =>
+    `<tr><td>${u.first_name} ${u.last_name}</td><td>$${fmt(u.balance)}</td><td><span class="sbadge ${u.kyc_status}">${u.kyc_status}</span></td></tr>`
+  ).join('') || '<tr><td colspan="3" class="empty">No users</td></tr>';
+  document.getElementById('dash-txns').innerHTML = d.recentTransactions.map(t =>
+    `<tr><td>${t.first_name}</td><td>${t.type}</td><td>$${fmt(t.amount)}</td><td><span class="sbadge ${t.status}">${t.status}</span></td></tr>`
+  ).join('') || '<tr><td colspan="4" class="empty">No transactions</td></tr>';
+}
 
-      // ── USERS ──
-      async function loadUsers() {
-        const d = await api("/admin/users");
-        if (!d) return;
-        renderUsers(d);
-      }
-      async function searchUsers() {
-        const q = document.getElementById("userSearch").value;
-        const d = await api(`/admin/users?search=${encodeURIComponent(q)}`);
-        if (d) renderUsers(d);
-      }
-      function renderUsers(users) {
-        document.getElementById("users-tbody").innerHTML = users.length
-          ? users
-              .map(
-                (u) => `
+// ── USERS ──
+async function loadUsers() {
+  const d = await api('/admin/users');
+  if (d) renderUsers(d);
+}
+async function searchUsers() {
+  const q = document.getElementById('userSearch').value;
+  const d = await api(`/admin/users?search=${encodeURIComponent(q)}`);
+  if (d) renderUsers(d);
+}
+function renderUsers(users) {
+  document.getElementById('users-tbody').innerHTML = users.length ? users.map(u => `
     <tr>
-      <td>${u.first_name} ${u.last_name}</td>
-      <td>${u.email}</td>
-      <td class="text-gold">${u.account_number}</td>
-      <td>${u.currency}</td>
+      <td><div style="font-weight:600;font-size:12px;">${u.first_name} ${u.last_name}</div><div style="font-size:11px;color:var(--muted);">${u.email}</div></td>
+      <td class="text-gold" style="font-family:monospace;font-size:11px;">${u.account_number}</td>
       <td class="bold">$${fmt(u.balance)}</td>
-      <td><span class="status-badge ${u.kyc_status}">${u.kyc_status}</span></td>
-      <td><span class="status-badge ${u.is_active ? "active" : "suspended"}">${u.is_active ? "Active" : "Suspended"}</span></td>
+      <td><span class="sbadge ${u.kyc_status}">${u.kyc_status}</span></td>
+      <td><span class="sbadge ${u.is_active?'active':'suspended'}">${u.is_active?'Active':'Suspended'}</span></td>
       <td><button class="btn btn-view btn-sm" onclick="viewUser(${u.id})">View</button></td>
     </tr>
-  `,
-              )
-              .join("")
-          : '<tr><td colspan="8"><div class="empty-state">No users found</div></td></tr>';
-      }
-      async function viewUser(id) {
-        currentUserId = id;
-        const d = await api(`/admin/users/${id}`);
-        if (!d) return;
-        const u = d.user;
-        document.getElementById("userModalBody").innerHTML = `
-    <div class="grid-2">
-      <div>
-        <div class="info-row"><span>Name</span><span class="bold">${u.first_name} ${u.middle_name || ""} ${u.last_name}</span></div>
-        <div class="info-row"><span>Username</span><span>@${u.username}</span></div>
-        <div class="info-row"><span>Email</span><span>${u.email}</span></div>
-        <div class="info-row"><span>Phone</span><span>${u.phone || "—"}</span></div>
-        <div class="info-row"><span>Country</span><span>${u.country || "—"}</span></div>
-        <div class="info-row"><span>Account #</span><span class="text-gold">${u.account_number}</span></div>
-        <div class="info-row"><span>Currency</span><span>${u.currency}</span></div>
-        <div class="info-row"><span>Referral Code</span><span>${u.my_referral_code || "—"}</span></div>
-        <div class="info-row"><span>Joined</span><span>${fmtDate(u.created_at)}</span></div>
-      </div>
-      <div>
-        <div class="info-row"><span>Balance</span><span class="bold text-gold">$${fmt(u.balance)}</span></div>
-        <div class="info-row"><span>Total Invested</span><span>$${fmt(u.total_invested)}</span></div>
-        <div class="info-row"><span>Total Profit</span><span class="text-success">$${fmt(u.total_profit)}</span></div>
-        <div class="info-row"><span>KYC Status</span><span><span class="status-badge ${u.kyc_status}">${u.kyc_status}</span></span></div>
-        <div class="info-row"><span>Account Status</span><span><span class="status-badge ${u.is_active ? "active" : "suspended"}">${u.is_active ? "Active" : "Suspended"}</span></span></div>
-      </div>
-    </div>
-    <hr class="divider"/>
-    <div style="font-size:13px;font-weight:600;margin-bottom:10px;">Recent Transactions</div>
-    <div style="overflow-x:auto;"><table style="width:100%;"><thead><tr><th>Type</th><th>Amount</th><th>Status</th><th>Date</th></tr></thead>
-    <tbody>${
-      d.transactions
-        .slice(0, 5)
-        .map(
-          (t) =>
-            `<tr><td>${t.type}</td><td>$${fmt(t.amount)}</td><td><span class="status-badge ${t.status}">${t.status}</span></td><td>${fmtDate(t.created_at)}</td></tr>`,
-        )
-        .join("") || '<tr><td colspan="4">No transactions</td></tr>'
-    }</tbody></table></div>
+  `).join('') : '<tr><td colspan="6"><div class="empty">No users found</div></td></tr>';
+}
+async function viewUser(id) {
+  currentUserId = id;
+  const d = await api(`/admin/users/${id}`);
+  if (!d) return;
+  const u = d.user;
+  document.getElementById('userModalBody').innerHTML = `
+    <div class="irow"><span>Name</span><span class="bold">${u.first_name} ${u.middle_name||''} ${u.last_name}</span></div>
+    <div class="irow"><span>Username</span><span>@${u.username}</span></div>
+    <div class="irow"><span>Email</span><span>${u.email}</span></div>
+    <div class="irow"><span>Phone</span><span>${u.phone||'—'}</span></div>
+    <div class="irow"><span>Country</span><span>${u.country||'—'}</span></div>
+    <div class="irow"><span>Account #</span><span class="text-gold" style="font-family:monospace;">${u.account_number}</span></div>
+    <div class="irow"><span>Currency</span><span>${u.currency}</span></div>
+    <div class="irow"><span>Balance</span><span class="bold text-gold">$${fmt(u.balance)}</span></div>
+    <div class="irow"><span>Total Invested</span><span>$${fmt(u.total_invested)}</span></div>
+    <div class="irow"><span>Total Profit</span><span class="text-success">$${fmt(u.total_profit)}</span></div>
+    <div class="irow"><span>KYC Status</span><span><span class="sbadge ${u.kyc_status}">${u.kyc_status}</span></span></div>
+    <div class="irow"><span>Account Status</span><span><span class="sbadge ${u.is_active?'active':'suspended'}">${u.is_active?'Active':'Suspended'}</span></span></div>
+    <div class="irow"><span>Joined</span><span>${fmtDate(u.created_at)}</span></div>
+    <div style="margin-top:12px;font-size:12px;font-weight:600;margin-bottom:8px;">Recent Transactions</div>
+    <div class="twrap"><table><thead><tr><th>Type</th><th>Amount</th><th>Status</th><th>Date</th></tr></thead>
+    <tbody>${d.transactions.slice(0,5).map(t=>`<tr><td>${t.type}</td><td>$${fmt(t.amount)}</td><td><span class="sbadge ${t.status}">${t.status}</span></td><td>${fmtDate(t.created_at)}</td></tr>`).join('')||'<tr><td colspan="4">No transactions</td></tr>'}</tbody></table></div>
   `;
-        document.getElementById("toggleStatusBtn").textContent = u.is_active
-          ? "Suspend Account"
-          : "Activate Account";
-        openModal("userModal");
-      }
-      function openAddFundsModal() {
-        closeModal("userModal");
-        openModal("addFundsModal");
-      }
-      function openDeductFundsModal() {
-        closeModal("userModal");
-        openModal("deductFundsModal");
-      }
-      async function submitAddFunds() {
-        const amount = document.getElementById("addFundsAmount").value;
-        const note = document.getElementById("addFundsNote").value;
-        if (!amount) {
-          toast("Enter an amount", "error");
-          return;
-        }
-        const d = await api(`/admin/users/${currentUserId}/add-funds`, "POST", {
-          amount,
-          note,
-        });
-        if (d?.success) {
-          toast(d.message, "success");
-          closeModal("addFundsModal");
-          loadUsers();
-        } else toast(d?.error || "Failed", "error");
-      }
-      async function submitDeductFunds() {
-        const amount = document.getElementById("deductFundsAmount").value;
-        const note = document.getElementById("deductFundsNote").value;
-        if (!amount) {
-          toast("Enter an amount", "error");
-          return;
-        }
-        const d = await api(
-          `/admin/users/${currentUserId}/deduct-funds`,
-          "POST",
-          { amount, note },
-        );
-        if (d?.success) {
-          toast(d.message, "success");
-          closeModal("deductFundsModal");
-          loadUsers();
-        } else toast(d?.error || "Failed", "error");
-      }
-      async function toggleUserStatus() {
-        if (!confirm("Change user account status?")) return;
-        const d = await api(
-          `/admin/users/${currentUserId}/toggle-status`,
-          "PUT",
-        );
-        if (d?.success) {
-          toast(d.message, "success");
-          closeModal("userModal");
-          loadUsers();
-        } else toast(d?.error || "Failed", "error");
-      }
-      async function deleteUser() {
-        if (!confirm("Permanently delete this user? This cannot be undone."))
-          return;
-        const d = await api(`/admin/users/${currentUserId}`, "DELETE");
-        if (d?.success) {
-          toast("User deleted", "success");
-          closeModal("userModal");
-          loadUsers();
-        } else toast(d?.error || "Failed", "error");
-      }
-      function openTransferBetweenModal() {
-        openModal("transferBetweenModal");
-      }
-      async function submitTransferBetween() {
-        const from_user_id = document.getElementById("tbFromId").value;
-        const to_user_id = document.getElementById("tbToId").value;
-        const amount = document.getElementById("tbAmount").value;
-        const note = document.getElementById("tbNote").value;
-        if (!from_user_id || !to_user_id || !amount) {
-          toast("All fields required", "error");
-          return;
-        }
-        const d = await api("/admin/users/transfer-between", "POST", {
-          from_user_id,
-          to_user_id,
-          amount,
-          note,
-        });
-        if (d?.success) {
-          toast(d.message, "success");
-          closeModal("transferBetweenModal");
-          loadUsers();
-        } else toast(d?.error || "Failed", "error");
-      }
+  document.getElementById('toggleStatusBtn').textContent = u.is_active ? 'Suspend' : 'Activate';
+  openModal('userModal');
+}
+async function submitAddFunds() {
+  const amount = document.getElementById('addFundsAmt').value;
+  const note = document.getElementById('addFundsNote').value;
+  if (!amount) { toast('Enter amount','error'); return; }
+  const d = await api(`/admin/users/${currentUserId}/add-funds`,'POST',{amount,note});
+  if (d?.success) { toast(d.message,'success'); closeModal('addFundsModal'); loadUsers(); }
+  else toast(d?.error||'Failed','error');
+}
+async function submitDeductFunds() {
+  const amount = document.getElementById('deductFundsAmt').value;
+  const note = document.getElementById('deductFundsNote').value;
+  if (!amount) { toast('Enter amount','error'); return; }
+  const d = await api(`/admin/users/${currentUserId}/deduct-funds`,'POST',{amount,note});
+  if (d?.success) { toast(d.message,'success'); closeModal('deductFundsModal'); loadUsers(); }
+  else toast(d?.error||'Failed','error');
+}
+async function toggleUserStatus() {
+  if (!confirm('Change user status?')) return;
+  const d = await api(`/admin/users/${currentUserId}/toggle-status`,'PUT');
+  if (d?.success) { toast(d.message,'success'); closeModal('userModal'); loadUsers(); }
+  else toast(d?.error||'Failed','error');
+}
+async function deleteUser() {
+  if (!confirm('Permanently delete this user?')) return;
+  const d = await api(`/admin/users/${currentUserId}`,'DELETE');
+  if (d?.success) { toast('User deleted','success'); closeModal('userModal'); loadUsers(); }
+  else toast(d?.error||'Failed','error');
+}
+async function submitTransferBetween() {
+  const d = await api('/admin/users/transfer-between','POST',{
+    from_user_id:document.getElementById('tbFrom').value,
+    to_user_id:document.getElementById('tbTo').value,
+    amount:document.getElementById('tbAmt').value,
+    note:document.getElementById('tbNote').value
+  });
+  if (d?.success) { toast(d.message,'success'); closeModal('transferBetweenModal'); }
+  else toast(d?.error||'Failed','error');
+}
 
-      // ── DEPOSITS ──
-      async function loadDeposits() {
-        const d = await api("/admin/deposits");
-        if (!d) return;
-        document.getElementById("deposits-tbody").innerHTML = d.length
-          ? d
-              .map(
-                (dep) => `
+// ── DEPOSITS ──
+async function loadDeposits() {
+  const d = await api('/admin/deposits');
+  if (!d) return;
+  document.getElementById('deposits-tbody').innerHTML = d.length ? d.map(dep => `
     <tr>
-      <td>${dep.first_name} ${dep.last_name}<br/><span class="text-muted" style="font-size:11px;">${dep.email}</span></td>
+      <td><div style="font-size:12px;font-weight:600;">${dep.first_name} ${dep.last_name}</div><div style="font-size:11px;color:var(--muted);">${dep.email}</div></td>
       <td class="bold text-gold">$${fmt(dep.amount)}</td>
-      <td>${dep.currency}</td>
-      <td>${fmtDate(dep.created_at)}</td>
-      <td><span class="status-badge ${dep.status}">${dep.status}</span></td>
-      <td>${
-        dep.status === "pending"
-          ? `<button class="btn btn-approve btn-sm" onclick="approveItem('/admin/deposits/${dep.id}/approve','Approve Deposit','Deposit',loadDeposits)">Approve</button>
-        <button class="btn btn-reject btn-sm" onclick="rejectItem('/admin/deposits/${dep.id}/reject','Reject Deposit',loadDeposits)">Reject</button>`
-          : '<span class="text-muted">—</span>'
-      }</td>
+      <td style="font-size:11px;">${fmtDate(dep.created_at)}</td>
+      <td><span class="sbadge ${dep.status}">${dep.status}</span></td>
+      <td>${dep.status==='pending'?`<div class="btns-row"><button class="btn btn-approve btn-sm" onclick="approveItem('/admin/deposits/${dep.id}/approve','Approve Deposit',loadDeposits)">✓</button><button class="btn btn-reject btn-sm" onclick="rejectItem('/admin/deposits/${dep.id}/reject','Reject Deposit',loadDeposits)">✕</button></div>`:'—'}</td>
     </tr>
-  `,
-              )
-              .join("")
-          : '<tr><td colspan="6"><div class="empty-state">No deposits</div></td></tr>';
-      }
+  `).join('') : '<tr><td colspan="5"><div class="empty">No deposits</div></td></tr>';
+}
 
-      // ── WITHDRAWALS ──
-      async function loadWithdrawals() {
-        const d = await api("/admin/withdrawals");
-        if (!d) return;
-        document.getElementById("withdrawals-tbody").innerHTML = d.length
-          ? d
-              .map(
-                (w) => `
+// ── WITHDRAWALS ──
+async function loadWithdrawals() {
+  const d = await api('/admin/withdrawals');
+  if (!d) return;
+  document.getElementById('withdrawals-tbody').innerHTML = d.length ? d.map(w => `
     <tr>
-      <td>${w.first_name} ${w.last_name}<br/><span class="text-muted" style="font-size:11px;">${w.email}</span></td>
+      <td><div style="font-size:12px;font-weight:600;">${w.first_name} ${w.last_name}</div><div style="font-size:11px;color:var(--muted);">${w.account_name||'—'}</div></td>
       <td class="bold text-gold">$${fmt(w.amount)}</td>
-      <td>${w.account_number || "—"}</td>
-      <td>${w.account_name || "—"}</td>
-      <td>${w.transfer_type || "—"}</td>
-      <td>${fmtDate(w.created_at)}</td>
-      <td><span class="status-badge ${w.status}">${w.status}</span></td>
-      <td>${
-        w.status === "pending"
-          ? `<button class="btn btn-approve btn-sm" onclick="approveItem('/admin/withdrawals/${w.id}/approve','Approve Withdrawal','Withdrawal',loadWithdrawals)">Approve</button>
-        <button class="btn btn-reject btn-sm" onclick="rejectItem('/admin/withdrawals/${w.id}/reject','Reject Withdrawal',loadWithdrawals)">Reject</button>`
-          : '<span class="text-muted">—</span>'
-      }</td>
+      <td style="font-size:11px;font-family:monospace;">${w.account_number||'—'}</td>
+      <td style="font-size:11px;">${fmtDate(w.created_at)}</td>
+      <td><span class="sbadge ${w.status}">${w.status}</span></td>
+      <td>${w.status==='pending'?`<div class="btns-row"><button class="btn btn-approve btn-sm" onclick="approveItem('/admin/withdrawals/${w.id}/approve','Approve Withdrawal',loadWithdrawals)">✓</button><button class="btn btn-reject btn-sm" onclick="rejectItem('/admin/withdrawals/${w.id}/reject','Reject Withdrawal',loadWithdrawals)">✕</button></div>`:'—'}</td>
     </tr>
-  `,
-              )
-              .join("")
-          : '<tr><td colspan="8"><div class="empty-state">No withdrawals</div></td></tr>';
-      }
+  `).join('') : '<tr><td colspan="6"><div class="empty">No withdrawals</div></td></tr>';
+}
 
-      // ── INVESTMENTS ──
-      async function loadInvestments() {
-        const d = await api("/admin/investments");
-        if (!d) return;
-        document.getElementById("investments-tbody").innerHTML = d.length
-          ? d
-              .map(
-                (inv) => `
+// ── INVESTMENTS ──
+async function loadInvestments() {
+  const d = await api('/admin/investments');
+  if (!d) return;
+  document.getElementById('investments-tbody').innerHTML = d.length ? d.map(inv => `
     <tr>
-      <td>${inv.first_name} ${inv.last_name}<br/><span class="text-muted" style="font-size:11px;">${inv.email}</span></td>
-      <td class="bold">${inv.plan_name}</td>
-      <td>${inv.investment_type}</td>
+      <td><div style="font-size:12px;font-weight:600;">${inv.first_name} ${inv.last_name}</div><div style="font-size:11px;color:var(--muted);">${inv.email}</div></td>
+      <td><div style="font-size:12px;font-weight:600;">${inv.plan_name}</div><div style="font-size:11px;color:var(--muted);">${inv.investment_type}</div></td>
       <td class="bold text-gold">$${fmt(inv.amount)}</td>
       <td class="text-success">${inv.return_percentage}%</td>
-      <td>$${fmt(inv.profit_amount)}</td>
-      <td>${fmtDate(inv.created_at)}</td>
-      <td><span class="status-badge ${inv.status}">${inv.status}</span></td>
-      <td>${
-        inv.status === "pending"
-          ? `<button class="btn btn-approve btn-sm" onclick="approveItem('/admin/investments/${inv.id}/approve','Approve Investment','Investment',loadInvestments)">Approve</button>
-        <button class="btn btn-reject btn-sm" onclick="rejectItem('/admin/investments/${inv.id}/reject','Reject Investment',loadInvestments)">Reject</button>`
-          : '<span class="text-muted">—</span>'
-      }</td>
+      <td><span class="sbadge ${inv.status}">${inv.status}</span></td>
+      <td>${inv.status==='pending'?`<div class="btns-row"><button class="btn btn-approve btn-sm" onclick="approveItem('/admin/investments/${inv.id}/approve','Approve Investment',loadInvestments)">✓</button><button class="btn btn-reject btn-sm" onclick="rejectItem('/admin/investments/${inv.id}/reject','Reject Investment',loadInvestments)">✕</button></div>`:'—'}</td>
     </tr>
-  `,
-              )
-              .join("")
-          : '<tr><td colspan="9"><div class="empty-state">No investments</div></td></tr>';
-      }
+  `).join('') : '<tr><td colspan="6"><div class="empty">No investments</div></td></tr>';
+}
 
-      // ── PROFIT WITHDRAWALS ──
-      async function loadProfitWithdrawals() {
-        const d = await api("/admin/profit-withdrawals");
-        if (!d) return;
-        document.getElementById("profit-tbody").innerHTML = d.length
-          ? d
-              .map(
-                (p) => `
+// ── PROFIT WITHDRAWALS ──
+async function loadProfitWithdrawals() {
+  const d = await api('/admin/profit-withdrawals');
+  if (!d) return;
+  document.getElementById('profit-tbody').innerHTML = d.length ? d.map(p => `
     <tr>
       <td>${p.first_name} ${p.last_name}</td>
-      <td>${p.plan_name}</td>
+      <td style="font-size:11px;">${p.plan_name}</td>
       <td class="bold text-gold">$${fmt(p.amount)}</td>
-      <td>${fmtDate(p.created_at)}</td>
-      <td><span class="status-badge ${p.status}">${p.status}</span></td>
-      <td>${p.status === "pending" ? `<button class="btn btn-approve btn-sm" onclick="approveItem('/admin/profit-withdrawals/${p.id}/approve','Approve Profit Withdrawal','Profit',loadProfitWithdrawals)">Approve</button>` : '<span class="text-muted">—</span>'}</td>
+      <td style="font-size:11px;">${fmtDate(p.created_at)}</td>
+      <td><span class="sbadge ${p.status}">${p.status}</span></td>
+      <td>${p.status==='pending'?`<button class="btn btn-approve btn-sm" onclick="approveItem('/admin/profit-withdrawals/${p.id}/approve','Approve Profit',loadProfitWithdrawals)">✓</button>`:'—'}</td>
     </tr>
-  `,
-              )
-              .join("")
-          : '<tr><td colspan="6"><div class="empty-state">No profit withdrawal requests</div></td></tr>';
-      }
+  `).join('') : '<tr><td colspan="6"><div class="empty">No profit requests</div></td></tr>';
+}
 
-      // ── TRANSFERS ──
-      async function loadTransfers() {
-        const d = await api("/admin/transfers");
-        if (!d) return;
-        document.getElementById("local-transfers-tbody").innerHTML = d.local
-          .length
-          ? d.local
-              .map(
-                (t) => `
+// ── TRANSFERS ──
+async function loadTransfers() {
+  const d = await api('/admin/transfers');
+  if (!d) return;
+  document.getElementById('local-tbody').innerHTML = d.local.length ? d.local.map(t => `
     <tr>
-      <td>${t.first_name} ${t.last_name}</td>
-      <td>${t.recipient_name}<br/><span class="text-muted" style="font-size:11px;">${t.recipient_account}</span></td>
+      <td style="font-size:12px;">${t.first_name} ${t.last_name}</td>
+      <td><div style="font-size:12px;">${t.recipient_name}</div><div style="font-size:11px;color:var(--muted);font-family:monospace;">${t.recipient_account}</div></td>
       <td class="bold text-gold">$${fmt(t.amount)}</td>
-      <td>${t.transfer_type}</td>
-      <td>${fmtDate(t.created_at)}</td>
-      <td><span class="status-badge ${t.status}">${t.status}</span></td>
-      <td>${
-        t.status === "pending"
-          ? `<button class="btn btn-approve btn-sm" onclick="approveItem('/admin/transfers/local/${t.id}/approve','Approve Transfer','Transfer',loadTransfers)">Approve</button>
-        <button class="btn btn-reject btn-sm" onclick="rejectItem('/admin/transfers/local/${t.id}/reject','Reject Transfer',loadTransfers)">Reject</button>`
-          : '<span class="text-muted">—</span>'
-      }</td>
+      <td><span class="sbadge ${t.status}">${t.status}</span></td>
+      <td>${t.status==='pending'?`<div class="btns-row"><button class="btn btn-approve btn-sm" onclick="approveItem('/admin/transfers/local/${t.id}/approve','Approve Transfer',loadTransfers)">✓</button><button class="btn btn-reject btn-sm" onclick="rejectItem('/admin/transfers/local/${t.id}/reject','Reject',loadTransfers)">✕</button></div>`:'—'}</td>
     </tr>
-  `,
-              )
-              .join("")
-          : '<tr><td colspan="7"><div class="empty-state">No local transfers</div></td></tr>';
-        document.getElementById("intl-transfers-tbody").innerHTML = d
-          .international.length
-          ? d.international
-              .map(
-                (t) => `
+  `).join('') : '<tr><td colspan="5"><div class="empty">No local transfers</div></td></tr>';
+  document.getElementById('intl-tbody').innerHTML = d.international.length ? d.international.map(t => `
     <tr>
-      <td>${t.first_name} ${t.last_name}</td>
+      <td style="font-size:12px;">${t.first_name} ${t.last_name}</td>
       <td>${t.method}</td>
-      <td>${t.recipient_name}</td>
       <td class="bold text-gold">$${fmt(t.amount)}</td>
-      <td>${t.country || "—"}</td>
-      <td>${fmtDate(t.created_at)}</td>
-      <td><span class="status-badge ${t.status}">${t.status}</span></td>
-      <td>${
-        t.status === "pending"
-          ? `<button class="btn btn-approve btn-sm" onclick="approveItem('/admin/transfers/international/${t.id}/approve','Approve Intl Transfer','Transfer',loadTransfers)">Approve</button>
-        <button class="btn btn-reject btn-sm" onclick="rejectItem('/admin/transfers/international/${t.id}/reject','Reject Intl Transfer',loadTransfers)">Reject</button>`
-          : '<span class="text-muted">—</span>'
-      }</td>
+      <td><span class="sbadge ${t.status}">${t.status}</span></td>
+      <td>${t.status==='pending'?`<div class="btns-row"><button class="btn btn-approve btn-sm" onclick="approveItem('/admin/transfers/international/${t.id}/approve','Approve Intl',loadTransfers)">✓</button><button class="btn btn-reject btn-sm" onclick="rejectItem('/admin/transfers/international/${t.id}/reject','Reject',loadTransfers)">✕</button></div>`:'—'}</td>
     </tr>
-  `,
-              )
-              .join("")
-          : '<tr><td colspan="8"><div class="empty-state">No international transfers</div></td></tr>';
-      }
-      function showTransferTab(tab) {
-        document.getElementById("tab-local").style.display =
-          tab === "local" ? "block" : "none";
-        document.getElementById("tab-intl").style.display =
-          tab === "intl" ? "block" : "none";
-      }
+  `).join('') : '<tr><td colspan="5"><div class="empty">No international transfers</div></td></tr>';
+}
+function showTTab(tab) {
+  document.getElementById('ttab-local').style.display = tab==='local'?'block':'none';
+  document.getElementById('ttab-intl').style.display = tab==='intl'?'block':'none';
+}
 
-      // ── LOANS ──
-      async function loadLoans() {
-        const d = await api("/admin/loans");
-        if (!d) return;
-        document.getElementById("loans-tbody").innerHTML = d.length
-          ? d
-              .map(
-                (l) => `
+// ── LOANS ──
+async function loadLoans() {
+  const d = await api('/admin/loans');
+  if (!d) return;
+  document.getElementById('loans-tbody').innerHTML = d.length ? d.map(l => `
     <tr>
-      <td>${l.first_name} ${l.last_name}</td>
-      <td>${l.loan_type}</td>
+      <td style="font-size:12px;">${l.first_name} ${l.last_name}</td>
+      <td style="font-size:11px;">${l.loan_type}</td>
       <td class="bold text-gold">$${fmt(l.amount)}</td>
-      <td>${l.duration_months} months</td>
-      <td style="max-width:150px;overflow:hidden;text-overflow:ellipsis;">${l.purpose || "—"}</td>
-      <td>${fmtDate(l.created_at)}</td>
-      <td><span class="status-badge ${l.status}">${l.status}</span></td>
-      <td>${
-        l.status === "pending"
-          ? `<button class="btn btn-approve btn-sm" onclick="approveLoan(${l.id})">Approve</button>
-        <button class="btn btn-reject btn-sm" onclick="rejectItem('/admin/loans/${l.id}/reject','Reject Loan',loadLoans)">Reject</button>`
-          : '<span class="text-muted">—</span>'
-      }</td>
+      <td style="font-size:11px;">${l.duration_months}m</td>
+      <td><span class="sbadge ${l.status}">${l.status}</span></td>
+      <td>${l.status==='pending'?`<div class="btns-row"><button class="btn btn-approve btn-sm" onclick="approveLoan(${l.id})">✓</button><button class="btn btn-reject btn-sm" onclick="rejectItem('/admin/loans/${l.id}/reject','Reject Loan',loadLoans)">✕</button></div>`:'—'}</td>
     </tr>
-  `,
-              )
-              .join("")
-          : '<tr><td colspan="8"><div class="empty-state">No loan applications</div></td></tr>';
-      }
-      function approveLoan(id) {
-        document.getElementById("approveModalTitle").textContent =
-          "Approve Loan";
-        document.getElementById("approveModalExtra").innerHTML =
-          '<div class="field"><label>Interest Rate (%)</label><input type="number" id="loanInterestRate" value="5" step="0.1"/></div>';
-        document.getElementById("approveNote").value = "";
-        document.getElementById("approveModalBtn").onclick = async () => {
-          const interest_rate =
-            document.getElementById("loanInterestRate").value;
-          const note = document.getElementById("approveNote").value;
-          const d = await api(`/admin/loans/${id}/approve`, "PUT", {
-            interest_rate,
-            note,
-          });
-          if (d?.success) {
-            toast(d.message, "success");
-            closeModal("approveModal");
-            loadLoans();
-          } else toast(d?.error || "Failed", "error");
-        };
-        openModal("approveModal");
-      }
+  `).join('') : '<tr><td colspan="6"><div class="empty">No loans</div></td></tr>';
+}
+function approveLoan(id) {
+  document.getElementById('approveModalTitle').textContent = 'Approve Loan';
+  document.getElementById('approveModalExtra').innerHTML = '<div class="field"><label>Interest Rate (%)</label><input type="number" id="loanRate" value="5" inputmode="decimal"/></div>';
+  document.getElementById('approveNote').value = '';
+  document.getElementById('approveBtn').onclick = async () => {
+    const d = await api(`/admin/loans/${id}/approve`,'PUT',{interest_rate:document.getElementById('loanRate').value,note:document.getElementById('approveNote').value});
+    if (d?.success) { toast(d.message,'success'); closeModal('approveModal'); loadLoans(); }
+    else toast(d?.error||'Failed','error');
+  };
+  openModal('approveModal');
+}
 
-      // ── KYC ──
-      async function loadKyc() {
-        const d = await api("/admin/kyc");
-        if (!d) return;
-        document.getElementById("kyc-tbody").innerHTML = d.length
-          ? d
-              .map(
-                (k) => `
+// ── KYC ──
+async function loadKyc() {
+  const d = await api('/admin/kyc');
+  if (!d) return;
+  document.getElementById('kyc-tbody').innerHTML = d.length ? d.map(k => `
     <tr>
-      <td>${k.first_name} ${k.last_name}</td>
-      <td>${k.email}</td>
-      <td>${k.document_type || "—"}</td>
-      <td>${fmtDate(k.created_at)}</td>
-      <td><span class="status-badge ${k.status}">${k.status}</span></td>
+      <td><div style="font-size:12px;font-weight:600;">${k.first_name} ${k.last_name}</div><div style="font-size:11px;color:var(--muted);">${k.email}</div></td>
+      <td style="font-size:11px;">${k.document_type||'—'}</td>
+      <td style="font-size:11px;">${fmtDate(k.created_at)}</td>
+      <td><span class="sbadge ${k.status}">${k.status}</span></td>
       <td><button class="btn btn-view btn-sm" onclick="viewKyc(${k.id})">Review</button></td>
     </tr>
-  `,
-              )
-              .join("")
-          : '<tr><td colspan="6"><div class="empty-state">No KYC submissions</div></td></tr>';
-      }
-      async function viewKyc(id) {
-        const all = await api("/admin/kyc");
-        const k = all.find((x) => x.id === id);
-        if (!k) return;
-        document.getElementById("kycModalBody").innerHTML = `
-    <div class="grid-2" style="margin-bottom:16px;">
-      <div>
-        <div class="info-row"><span>Full Name</span><span>${k.full_name || "—"}</span></div>
-        <div class="info-row"><span>Email</span><span>${k.email || "—"}</span></div>
-        <div class="info-row"><span>Phone</span><span>${k.phone || "—"}</span></div>
-        <div class="info-row"><span>Gender</span><span>${k.gender || "—"}</span></div>
-        <div class="info-row"><span>DOB</span><span>${k.date_of_birth ? fmtDate(k.date_of_birth) : "—"}</span></div>
-        <div class="info-row"><span>SSN/NI</span><span>${k.ssn || "—"}</span></div>
-        <div class="info-row"><span>Employment</span><span>${k.employment_type || "—"}</span></div>
-        <div class="info-row"><span>Annual Income</span><span>${k.annual_income || "—"}</span></div>
-      </div>
-      <div>
-        <div class="info-row"><span>Address</span><span>${k.address_line || "—"}</span></div>
-        <div class="info-row"><span>City</span><span>${k.city || "—"}</span></div>
-        <div class="info-row"><span>State</span><span>${k.state || "—"}</span></div>
-        <div class="info-row"><span>Nationality</span><span>${k.nationality || "—"}</span></div>
-        <div class="info-row"><span>Beneficiary</span><span>${k.beneficiary_name || "—"}</span></div>
-        <div class="info-row"><span>Relationship</span><span>${k.beneficiary_relationship || "—"}</span></div>
-        <div class="info-row"><span>Document Type</span><span>${k.document_type || "—"}</span></div>
-        <div class="info-row"><span>Status</span><span><span class="status-badge ${k.status}">${k.status}</span></span></div>
-      </div>
-    </div>
-    <div class="grid-3">
-      ${k.document_front ? `<div><div style="font-size:12px;color:var(--muted);margin-bottom:6px;">Front</div><img class="doc-preview" src="${k.document_front}" alt="Front"/></div>` : ""}
-      ${k.document_back ? `<div><div style="font-size:12px;color:var(--muted);margin-bottom:6px;">Back</div><img class="doc-preview" src="${k.document_back}" alt="Back"/></div>` : ""}
-      ${k.passport_photo ? `<div><div style="font-size:12px;color:var(--muted);margin-bottom:6px;">Photo</div><img class="doc-preview" src="${k.passport_photo}" alt="Photo"/></div>` : ""}
+  `).join('') : '<tr><td colspan="5"><div class="empty">No KYC submissions</div></td></tr>';
+}
+async function viewKyc(id) {
+  const all = await api('/admin/kyc');
+  const k = all?.find(x => x.id === id);
+  if (!k) return;
+  document.getElementById('kycModalBody').innerHTML = `
+    <div class="irow"><span>Name</span><span>${k.full_name||'—'}</span></div>
+    <div class="irow"><span>Email</span><span>${k.email||'—'}</span></div>
+    <div class="irow"><span>Phone</span><span>${k.phone||'—'}</span></div>
+    <div class="irow"><span>Gender</span><span>${k.gender||'—'}</span></div>
+    <div class="irow"><span>DOB</span><span>${k.date_of_birth?fmtDate(k.date_of_birth):'—'}</span></div>
+    <div class="irow"><span>SSN/NI</span><span>${k.ssn||'—'}</span></div>
+    <div class="irow"><span>Employment</span><span>${k.employment_type||'—'}</span></div>
+    <div class="irow"><span>Income</span><span>${k.annual_income||'—'}</span></div>
+    <div class="irow"><span>Address</span><span>${k.address_line||'—'}</span></div>
+    <div class="irow"><span>City/State</span><span>${k.city||'—'}, ${k.state||'—'}</span></div>
+    <div class="irow"><span>Nationality</span><span>${k.nationality||'—'}</span></div>
+    <div class="irow"><span>Beneficiary</span><span>${k.beneficiary_name||'—'} (${k.beneficiary_relationship||'—'})</span></div>
+    <div class="irow"><span>Document</span><span>${k.document_type||'—'}</span></div>
+    <div class="irow"><span>Status</span><span><span class="sbadge ${k.status}">${k.status}</span></span></div>
+    <div class="docs-row">
+      ${k.document_front?`<div><div style="font-size:11px;color:var(--muted);margin-bottom:4px;">Front</div><img class="doc-preview" src="${k.document_front}" alt="Front"/></div>`:''}
+      ${k.document_back?`<div><div style="font-size:11px;color:var(--muted);margin-bottom:4px;">Back</div><img class="doc-preview" src="${k.document_back}" alt="Back"/></div>`:''}
+      ${k.passport_photo?`<div><div style="font-size:11px;color:var(--muted);margin-bottom:4px;">Photo</div><img class="doc-preview" src="${k.passport_photo}" alt="Photo"/></div>`:''}
     </div>
   `;
-        const footer = document.getElementById("kycModalFooter");
-        if (k.status === "pending") {
-          footer.innerHTML = `
+  const foot = document.getElementById('kycModalFoot');
+  if (k.status === 'pending') {
+    foot.innerHTML = `
       <button class="btn btn-approve" onclick="kycAction(${k.id},'approve')">Approve KYC</button>
       <button class="btn btn-reject" onclick="kycAction(${k.id},'reject')">Reject KYC</button>
-      <button class="btn" onclick="closeModal('kycModal')" style="background:var(--navy3);border:1px solid var(--border);">Close</button>
+      <button class="btn btn-ghost" onclick="closeModal('kycModal')">Close</button>
     `;
-        } else {
-          footer.innerHTML = `<button class="btn btn-primary" onclick="closeModal('kycModal')">Close</button>`;
-        }
-        openModal("kycModal");
-      }
-      async function kycAction(id, action) {
-        const note = prompt(`Enter admin note (optional):`);
-        const d = await api(`/admin/kyc/${id}/${action}`, "PUT", {
-          note: note || "",
-        });
-        if (d?.success) {
-          toast(d.message, "success");
-          closeModal("kycModal");
-          loadKyc();
-        } else toast(d?.error || "Failed", "error");
-      }
+  } else {
+    foot.innerHTML = `<button class="btn btn-ghost btn-full" onclick="closeModal('kycModal')">Close</button>`;
+  }
+  openModal('kycModal');
+}
+async function kycAction(id, action) {
+  const note = prompt('Admin note (optional):');
+  const d = await api(`/admin/kyc/${id}/${action}`,'PUT',{note:note||''});
+  if (d?.success) { toast(d.message,'success'); closeModal('kycModal'); loadKyc(); }
+  else toast(d?.error||'Failed','error');
+}
 
-      // ── CARDS ──
-      async function loadCards() {
-        const d = await api("/admin/cards");
-        if (!d) return;
-        document.getElementById("cards-tbody").innerHTML = d.length
-          ? d
-              .map(
-                (c) => `
+// ── CARDS ──
+async function loadCards() {
+  const d = await api('/admin/cards');
+  if (!d) return;
+  document.getElementById('cards-tbody').innerHTML = d.length ? d.map(c => `
     <tr>
-      <td>${c.first_name} ${c.last_name}</td>
-      <td>${c.email}</td>
-      <td>${c.cardholder_name}</td>
-      <td>${fmtDate(c.created_at)}</td>
-      <td><span class="status-badge ${c.status}">${c.status}</span></td>
-      <td>${c.card_number || "—"}</td>
-      <td>${
-        c.status === "pending"
-          ? `<button class="btn btn-approve btn-sm" onclick="approveItem('/admin/cards/${c.id}/approve','Approve Card','Card',loadCards)">Approve</button>
-        <button class="btn btn-reject btn-sm" onclick="rejectItem('/admin/cards/${c.id}/reject','Reject Card',loadCards)">Reject</button>`
-          : '<span class="text-muted">—</span>'
-      }</td>
+      <td><div style="font-size:12px;font-weight:600;">${c.first_name} ${c.last_name}</div><div style="font-size:11px;color:var(--muted);">${c.email}</div></td>
+      <td style="font-size:12px;">${c.cardholder_name}</td>
+      <td style="font-size:11px;">${fmtDate(c.created_at)}</td>
+      <td><span class="sbadge ${c.status}">${c.status}</span></td>
+      <td>${c.status==='pending'?`<div class="btns-row"><button class="btn btn-approve btn-sm" onclick="approveItem('/admin/cards/${c.id}/approve','Approve Card',loadCards)">✓</button><button class="btn btn-reject btn-sm" onclick="rejectItem('/admin/cards/${c.id}/reject','Reject Card',loadCards)">✕</button></div>`:'—'}</td>
     </tr>
-  `,
-              )
-              .join("")
-          : '<tr><td colspan="7"><div class="empty-state">No card applications</div></td></tr>';
-      }
+  `).join('') : '<tr><td colspan="5"><div class="empty">No card applications</div></td></tr>';
+}
 
-      // ── IRS ──
-      async function loadIrs() {
-        const d = await api("/admin/irs");
-        if (!d) return;
-        document.getElementById("irs-tbody").innerHTML = d.length
-          ? d
-              .map(
-                (i) => `
+// ── IRS ──
+async function loadIrs() {
+  const d = await api('/admin/irs');
+  if (!d) return;
+  document.getElementById('irs-tbody').innerHTML = d.length ? d.map(i => `
     <tr>
-      <td>${i.first_name} ${i.last_name}</td>
-      <td>${i.full_name}</td>
-      <td>${i.ssn}</td>
-      <td>${i.idme_email}</td>
-      <td>${i.country || "—"}</td>
-      <td>${fmtDate(i.created_at)}</td>
-      <td><span class="status-badge ${i.status}">${i.status}</span></td>
-      <td>${
-        i.status === "pending"
-          ? `<button class="btn btn-approve btn-sm" onclick="approveItem('/admin/irs/${i.id}/approve','Approve IRS','IRS',loadIrs)">Approve</button>
-        <button class="btn btn-reject btn-sm" onclick="rejectItem('/admin/irs/${i.id}/reject','Reject IRS',loadIrs)">Reject</button>`
-          : '<span class="text-muted">—</span>'
-      }</td>
+      <td><div style="font-size:12px;font-weight:600;">${i.first_name} ${i.last_name}</div><div style="font-size:11px;color:var(--muted);">${i.email}</div></td>
+      <td style="font-size:12px;">${i.full_name}</td>
+      <td style="font-size:11px;font-family:monospace;">${i.ssn}</td>
+      <td style="font-size:11px;">${fmtDate(i.created_at)}</td>
+      <td><span class="sbadge ${i.status}">${i.status}</span></td>
+      <td>${i.status==='pending'?`<div class="btns-row"><button class="btn btn-approve btn-sm" onclick="approveItem('/admin/irs/${i.id}/approve','Approve IRS',loadIrs)">✓</button><button class="btn btn-reject btn-sm" onclick="rejectItem('/admin/irs/${i.id}/reject','Reject IRS',loadIrs)">✕</button></div>`:'—'}</td>
     </tr>
-  `,
-              )
-              .join("")
-          : '<tr><td colspan="8"><div class="empty-state">No IRS requests</div></td></tr>';
-      }
+  `).join('') : '<tr><td colspan="6"><div class="empty">No IRS requests</div></td></tr>';
+}
 
-      // ── ADMIN CHAT ──
-      async function loadAdminChatUsers() {
-        const d = await api("/admin/chat/users");
-        if (!d) return;
-        document.getElementById("adminChatUsersList").innerHTML = d.length
-          ? d
-              .map(
-                (u) => `
-    <div class="chat-user-item ${currentAdminChatUserId == u.id ? "active" : ""}" onclick="selectAdminChatUser(${u.id},'${u.first_name} ${u.last_name}')">
-      <div class="chat-user-avatar">${u.first_name[0]}</div>
+// ── ADMIN CHAT ──
+async function loadAdminChatList() {
+  const d = await api('/admin/chat/users');
+  if (!d) return;
+  document.getElementById('adminChatList').innerHTML = d.length ? d.map(u => `
+    <div class="cuser ${currentAdminChatUserId==u.id?'active':''}" onclick="selectAdminChatUser(${u.id},'${u.first_name} ${u.last_name}')">
+      <div class="cuserav">${u.first_name[0]}</div>
       <div style="flex:1;min-width:0;">
         <div style="display:flex;justify-content:space-between;align-items:center;">
-          <div class="chat-user-name">${u.first_name} ${u.last_name}</div>
-          ${u.unread_count > 0 ? `<span class="badge">${u.unread_count}</span>` : ""}
+          <div class="cuser-name">${u.first_name} ${u.last_name}</div>
+          ${u.unread_count>0?`<span class="nbadge">${u.unread_count}</span>`:''}
         </div>
-        <div class="chat-user-last">${u.last_message || "No messages"}</div>
+        <div class="cuser-last">${u.last_message||'No messages'}</div>
       </div>
     </div>
-  `,
-              )
-              .join("")
-          : '<div style="padding:16px;text-align:center;color:var(--muted);font-size:13px;">No chats yet</div>';
-      }
-      async function selectAdminChatUser(userId, name) {
-        currentAdminChatUserId = userId;
-        document.getElementById("adminChatTitle").textContent = name;
-        document.getElementById("adminChatCodeBtns").style.display = "flex";
-        document.getElementById("adminChatInputArea").style.display = "flex";
-        await loadAdminChatMessages(userId);
-        loadAdminChatUsers();
-      }
-      async function loadAdminChatMessages(userId) {
-        const d = await api(`/admin/chat/${userId}`);
-        if (!d) return;
-        const container = document.getElementById("adminChatMessages");
-        container.innerHTML = d.length
-          ? d
-              .map(
-                (m) => `
+  `).join('') : '<div style="padding:16px;text-align:center;font-size:12px;color:var(--muted);">No chats yet</div>';
+}
+async function selectAdminChatUser(userId, name) {
+  currentAdminChatUserId = userId;
+  document.getElementById('adminChatTitle').textContent = name;
+  document.getElementById('adminCodeBtns').style.display = 'flex';
+  document.getElementById('adminChatInpRow').style.display = 'flex';
+  if (isMobile()) {
+    document.getElementById('adminChatBackBtn').style.display = 'inline-flex';
+    document.querySelector('#sec-admin-chat .chat-users').style.display = 'none';
+    document.getElementById('adminChatMain').style.display = 'flex';
+  }
+  await loadAdminChatMsgs(userId);
+  loadAdminChatList();
+}
+async function loadAdminChatMsgs(userId) {
+  const d = await api(`/admin/chat/${userId}`);
+  if (!d) return;
+  const c = document.getElementById('adminChatMsgs');
+  const atBottom = c.scrollHeight - c.scrollTop - c.clientHeight < 60;
+  c.innerHTML = d.length ? d.map(m => `
     <div>
-      <div class="msg ${m.is_code ? "code" : m.sender}">${m.message}</div>
-      <div class="msg-time" style="text-align:${m.sender === "admin" ? "right" : "left"}">${fmtDate(m.created_at)}</div>
+      <div class="msg ${m.is_code?'code':m.sender}">${m.message}</div>
+      <div class="msg-time" style="text-align:${m.sender==='admin'?'right':'left'}">${fmtDate(m.created_at)}</div>
     </div>
-  `,
-              )
-              .join("")
-          : '<div class="empty-state">No messages yet</div>';
-        container.scrollTop = container.scrollHeight;
-      }
-      async function sendAdminMessage() {
-        const input = document.getElementById("adminChatInput");
-        const msg = input.value.trim();
-        if (!msg || !currentAdminChatUserId) return;
-        await api(`/admin/chat/${currentAdminChatUserId}`, "POST", {
-          message: msg,
-        });
-        input.value = "";
-        await loadAdminChatMessages(currentAdminChatUserId);
-      }
-      async function generateCode(codeType) {
-        if (!currentAdminChatUserId) {
-          toast("Select a user first", "error");
-          return;
-        }
-        const d = await api("/admin/generate-code", "POST", {
-          user_id: currentAdminChatUserId,
-          code_type: codeType,
-        });
-        if (d?.success) {
-          toast(`${d.code} — Code sent to user chat!`, "success");
-          loadAdminChatMessages(currentAdminChatUserId);
-        } else toast(d?.error || "Failed", "error");
-      }
+  `).join('') : '<div class="empty">No messages yet</div>';
+  if (atBottom || d.length <= 3) c.scrollTop = c.scrollHeight;
+}
+async function sendAdminMsg() {
+  const inp = document.getElementById('adminChatInp');
+  const msg = inp.value.trim();
+  if (!msg || !currentAdminChatUserId) return;
+  await api(`/admin/chat/${currentAdminChatUserId}`,'POST',{message:msg});
+  inp.value = '';
+  loadAdminChatMsgs(currentAdminChatUserId);
+}
+async function genCode(codeType) {
+  if (!currentAdminChatUserId) { toast('Select a user first','error'); return; }
+  const d = await api('/admin/generate-code','POST',{user_id:currentAdminChatUserId,code_type:codeType});
+  if (d?.success) { toast(`Code sent: ${d.code}`,'success'); loadAdminChatMsgs(currentAdminChatUserId); }
+  else toast(d?.error||'Failed','error');
+}
 
-      // ── SUPPORT CHAT ──
-      async function loadSupportChatUsers() {
-        const d = await api("/admin/support-chat/users");
-        if (!d) return;
-        document.getElementById("supportChatUsersList").innerHTML = d.length
-          ? d
-              .map(
-                (u) => `
-    <div class="chat-user-item ${currentSupportChatUserId == u.id ? "active" : ""}" onclick="selectSupportChatUser(${u.id},'${u.first_name} ${u.last_name}')">
-      <div class="chat-user-avatar">${u.first_name[0]}</div>
+// ── SUPPORT CHAT ──
+async function loadSupportChatList() {
+  const d = await api('/admin/support-chat/users');
+  if (!d) return;
+  document.getElementById('supportChatList').innerHTML = d.length ? d.map(u => `
+    <div class="cuser ${currentSupportChatUserId==u.id?'active':''}" onclick="selectSupportChatUser(${u.id},'${u.first_name} ${u.last_name}')">
+      <div class="cuserav">${u.first_name[0]}</div>
       <div style="flex:1;min-width:0;">
         <div style="display:flex;justify-content:space-between;align-items:center;">
-          <div class="chat-user-name">${u.first_name} ${u.last_name}</div>
-          ${u.unread_count > 0 ? `<span class="badge">${u.unread_count}</span>` : ""}
+          <div class="cuser-name">${u.first_name} ${u.last_name}</div>
+          ${u.unread_count>0?`<span class="nbadge">${u.unread_count}</span>`:''}
         </div>
-        <div class="chat-user-last">${u.last_message || "No messages"}</div>
+        <div class="cuser-last">${u.last_message||'No messages'}</div>
       </div>
     </div>
-  `,
-              )
-              .join("")
-          : '<div style="padding:16px;text-align:center;color:var(--muted);font-size:13px;">No support chats</div>';
-      }
-      async function selectSupportChatUser(userId, name) {
-        currentSupportChatUserId = userId;
-        document.getElementById("supportChatTitle").textContent = name;
-        document.getElementById("supportChatInputArea").style.display = "flex";
-        await loadSupportChatMessages(userId);
-        loadSupportChatUsers();
-      }
-      async function loadSupportChatMessages(userId) {
-        const d = await api(`/admin/support-chat/${userId}`);
-        if (!d) return;
-        const container = document.getElementById("supportChatMessages");
-        container.innerHTML = d.length
-          ? d
-              .map(
-                (m) => `
+  `).join('') : '<div style="padding:16px;text-align:center;font-size:12px;color:var(--muted);">No support chats</div>';
+}
+async function selectSupportChatUser(userId, name) {
+  currentSupportChatUserId = userId;
+  document.getElementById('supportChatTitle').textContent = name;
+  document.getElementById('supportChatInpRow').style.display = 'flex';
+  if (isMobile()) {
+    document.getElementById('supportChatBackBtn').style.display = 'inline-flex';
+    document.querySelector('#sec-support-chat .chat-users').style.display = 'none';
+    document.getElementById('supportChatMain').style.display = 'flex';
+  }
+  await loadSupportChatMsgs(userId);
+  loadSupportChatList();
+}
+async function loadSupportChatMsgs(userId) {
+  const d = await api(`/admin/support-chat/${userId}`);
+  if (!d) return;
+  const c = document.getElementById('supportChatMsgs');
+  c.innerHTML = d.length ? d.map(m => `
     <div>
       <div class="msg ${m.sender}">${m.message}</div>
-      <div class="msg-time" style="text-align:${m.sender === "admin" ? "right" : "left"}">${fmtDate(m.created_at)}</div>
+      <div class="msg-time" style="text-align:${m.sender==='admin'?'right':'left'}">${fmtDate(m.created_at)}</div>
     </div>
-  `,
-              )
-              .join("")
-          : '<div class="empty-state">No messages yet</div>';
-        container.scrollTop = container.scrollHeight;
-      }
-      async function sendSupportMessage() {
-        const input = document.getElementById("supportChatInput");
-        const msg = input.value.trim();
-        if (!msg || !currentSupportChatUserId) return;
-        await api(`/admin/support-chat/${currentSupportChatUserId}`, "POST", {
-          message: msg,
-        });
-        input.value = "";
-        await loadSupportChatMessages(currentSupportChatUserId);
-      }
+  `).join('') : '<div class="empty">No messages yet</div>';
+  c.scrollTop = c.scrollHeight;
+}
+async function sendSupportMsg() {
+  const inp = document.getElementById('supportChatInp');
+  const msg = inp.value.trim();
+  if (!msg || !currentSupportChatUserId) return;
+  await api(`/admin/support-chat/${currentSupportChatUserId}`,'POST',{message:msg});
+  inp.value = '';
+  loadSupportChatMsgs(currentSupportChatUserId);
+}
+function hideChatMain(type) {
+  if (type === 'admin') {
+    document.querySelector('#sec-admin-chat .chat-users').style.display = '';
+    document.getElementById('adminChatBackBtn').style.display = 'none';
+    currentAdminChatUserId = null;
+  } else {
+    document.querySelector('#sec-support-chat .chat-users').style.display = '';
+    document.getElementById('supportChatBackBtn').style.display = 'none';
+    currentSupportChatUserId = null;
+  }
+}
 
-      // ── TICKETS ──
-      async function loadTickets() {
-        const d = await api("/admin/tickets");
-        if (!d) return;
-        document.getElementById("tickets-tbody").innerHTML = d.length
-          ? d
-              .map(
-                (t) => `
+// ── TICKETS ──
+async function loadTickets() {
+  const d = await api('/admin/tickets');
+  if (!d) return;
+  document.getElementById('tickets-tbody').innerHTML = d.length ? d.map(t => `
     <tr>
-      <td>${t.first_name} ${t.last_name}</td>
-      <td>${t.title}</td>
-      <td><span class="status-badge ${t.priority === "high" ? "rejected" : t.priority === "medium" ? "pending" : "approved"}">${t.priority}</span></td>
-      <td>${fmtDate(t.created_at)}</td>
-      <td><span class="status-badge ${t.status === "open" ? "pending" : "approved"}">${t.status}</span></td>
-      <td>${t.status === "open" ? `<button class="btn btn-approve btn-sm" onclick="resolveTicket(${t.id})">Resolve</button>` : '<span class="text-muted">Resolved</span>'}</td>
+      <td style="font-size:12px;">${t.first_name} ${t.last_name}</td>
+      <td style="font-size:12px;max-width:140px;overflow:hidden;text-overflow:ellipsis;">${t.title}</td>
+      <td><span class="sbadge ${t.priority==='high'?'rejected':t.priority==='medium'?'pending':'approved'}">${t.priority}</span></td>
+      <td><span class="sbadge ${t.status==='open'?'pending':'approved'}">${t.status}</span></td>
+      <td>${t.status==='open'?`<button class="btn btn-approve btn-sm" onclick="resolveTicket(${t.id})">Resolve</button>`:'—'}</td>
     </tr>
-  `,
-              )
-              .join("")
-          : '<tr><td colspan="6"><div class="empty-state">No tickets</div></td></tr>';
-      }
-      async function resolveTicket(id) {
-        const reply = prompt("Enter reply to user (optional):");
-        const d = await api(`/admin/tickets/${id}/resolve`, "PUT", {
-          reply: reply || "",
-        });
-        if (d?.success) {
-          toast("Ticket resolved", "success");
-          loadTickets();
-        } else toast(d?.error || "Failed", "error");
-      }
+  `).join('') : '<tr><td colspan="5"><div class="empty">No tickets</div></td></tr>';
+}
+async function resolveTicket(id) {
+  const reply = prompt('Reply to user (optional):');
+  const d = await api(`/admin/tickets/${id}/resolve`,'PUT',{reply:reply||''});
+  if (d?.success) { toast('Ticket resolved','success'); loadTickets(); }
+  else toast(d?.error||'Failed','error');
+}
 
-      // ── BROADCAST ──
-      async function sendBroadcast() {
-        const title = document.getElementById("bc-title").value.trim();
-        const message = document.getElementById("bc-message").value.trim();
-        if (!title || !message) {
-          toast("Title and message required", "error");
-          return;
-        }
-        const d = await api("/admin/broadcast", "POST", { title, message });
-        if (d?.success) {
-          toast(d.message, "success");
-          document.getElementById("bc-title").value = "";
-          document.getElementById("bc-message").value = "";
-        } else toast(d?.error || "Failed", "error");
-      }
+// ── BROADCAST ──
+async function sendBroadcast() {
+  const title = document.getElementById('bc-title').value.trim();
+  const message = document.getElementById('bc-message').value.trim();
+  if (!title || !message) { toast('Title and message required','error'); return; }
+  const d = await api('/admin/broadcast','POST',{title,message});
+  if (d?.success) { toast(d.message,'success'); document.getElementById('bc-title').value=''; document.getElementById('bc-message').value=''; }
+  else toast(d?.error||'Failed','error');
+}
 
-      // ── TRANSACTIONS ──
-      async function loadTransactions() {
-        const d = await api("/admin/transactions");
-        if (!d) return;
-        document.getElementById("transactions-tbody").innerHTML = d.length
-          ? d
-              .map(
-                (t) => `
+// ── TRANSACTIONS ──
+async function loadTransactions() {
+  const d = await api('/admin/transactions');
+  if (!d) return;
+  document.getElementById('transactions-tbody').innerHTML = d.length ? d.map(t => `
     <tr>
-      <td>${t.first_name} ${t.last_name}</td>
-      <td><span class="status-badge ${t.type === "credit" ? "approved" : t.type === "debit" ? "rejected" : "processing"}">${t.type}</span></td>
+      <td style="font-size:12px;">${t.first_name} ${t.last_name}</td>
+      <td><span class="sbadge ${t.type==='credit'?'active':t.type==='debit'?'rejected':'processing'}">${t.type}</span></td>
       <td class="bold">$${fmt(t.amount)}</td>
-      <td>${t.currency}</td>
-      <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;">${t.description || "—"}</td>
-      <td>${fmtDate(t.created_at)}</td>
-      <td><span class="status-badge ${t.status}">${t.status}</span></td>
+      <td style="font-size:11px;">${fmtDate(t.created_at)}</td>
+      <td><span class="sbadge ${t.status}">${t.status}</span></td>
     </tr>
-  `,
-              )
-              .join("")
-          : '<tr><td colspan="7"><div class="empty-state">No transactions</div></td></tr>';
-      }
+  `).join('') : '<tr><td colspan="5"><div class="empty">No transactions</div></td></tr>';
+}
 
-      // ── SAVINGS ──
-      async function loadSavings() {
-        const d = await api("/admin/savings");
-        if (!d) return;
-        document.getElementById("savings-tbody").innerHTML = d.length
-          ? d
-              .map(
-                (s) => `
+// ── SAVINGS ──
+async function loadSavings() {
+  const d = await api('/admin/savings');
+  if (!d) return;
+  document.getElementById('savings-tbody').innerHTML = d.length ? d.map(s => `
     <tr>
-      <td>${s.first_name} ${s.last_name}</td>
-      <td>${s.plan_name}</td>
+      <td style="font-size:12px;">${s.first_name} ${s.last_name}</td>
+      <td style="font-size:12px;">${s.plan_name}</td>
       <td class="bold text-gold">$${fmt(s.amount)}</td>
       <td>${s.interest_rate}%</td>
-      <td class="text-success">$${fmt(s.interest_earned)}</td>
-      <td>${fmtDate(s.maturity_date)}</td>
-      <td><span class="status-badge ${s.status}">${s.status}</span></td>
+      <td style="font-size:11px;">${fmtDate(s.maturity_date)}</td>
+      <td><span class="sbadge ${s.status}">${s.status}</span></td>
     </tr>
-  `,
-              )
-              .join("")
-          : '<tr><td colspan="7"><div class="empty-state">No savings investments</div></td></tr>';
-      }
+  `).join('') : '<tr><td colspan="6"><div class="empty">No savings</div></td></tr>';
+}
 
-      // ── CRYPTO ──
-      async function loadCrypto() {
-        const d = await api("/admin/crypto");
-        if (!d) return;
-        document.getElementById("crypto-tbody").innerHTML = d
-          .map(
-            (c) => `
+// ── CRYPTO ──
+async function loadCrypto() {
+  const d = await api('/admin/crypto');
+  if (!d) return;
+  document.getElementById('crypto-tbody').innerHTML = d.map(c => `
     <tr>
       <td class="bold text-gold">${c.symbol}</td>
-      <td>${c.name}</td>
       <td>$${fmt(c.price)}</td>
-      <td class="${parseFloat(c.change_24h) >= 0 ? "text-success" : "text-error"}">${c.change_24h > 0 ? "+" : ""}${c.change_24h}%</td>
-      <td><span class="status-badge ${c.trend === "bullish" ? "approved" : c.trend === "bearish" ? "rejected" : "processing"}">${c.trend}</span></td>
+      <td class="${parseFloat(c.change_24h)>=0?'text-success':'text-error'}">${c.change_24h>0?'+':''}${c.change_24h}%</td>
+      <td><span class="sbadge ${c.trend==='bullish'?'active':c.trend==='bearish'?'rejected':'processing'}">${c.trend}</span></td>
       <td><button class="btn btn-view btn-sm" onclick="editCrypto(${c.id},'${c.symbol}',${c.price},${c.change_24h},'${c.trend}')">Edit</button></td>
     </tr>
-  `,
-          )
-          .join("");
-      }
-      function editCrypto(id, symbol, price, change, trend) {
-        document.getElementById("cryptoModalTitle").textContent =
-          `Update ${symbol}`;
-        document.getElementById("cryptoPrice").value = price;
-        document.getElementById("cryptoChange").value = change;
-        document.getElementById("cryptoTrend").value = trend;
-        document.getElementById("cryptoSaveBtn").onclick = async () => {
-          const d = await api(`/admin/crypto/${id}`, "PUT", {
-            price: document.getElementById("cryptoPrice").value,
-            change_24h: document.getElementById("cryptoChange").value,
-            trend: document.getElementById("cryptoTrend").value,
-          });
-          if (d?.success) {
-            toast("Price updated", "success");
-            closeModal("cryptoModal");
-            loadCrypto();
-          } else toast(d?.error || "Failed", "error");
-        };
-        openModal("cryptoModal");
-      }
+  `).join('');
+}
+function editCrypto(id, sym, price, change, trend) {
+  document.getElementById('cryptoModalTitle').textContent = `Update ${sym}`;
+  document.getElementById('cprice').value = price;
+  document.getElementById('cchange').value = change;
+  document.getElementById('ctrend').value = trend;
+  document.getElementById('cryptoSaveBtn').onclick = async () => {
+    const d = await api(`/admin/crypto/${id}`,'PUT',{price:document.getElementById('cprice').value,change_24h:document.getElementById('cchange').value,trend:document.getElementById('ctrend').value});
+    if (d?.success) { toast('Updated','success'); closeModal('cryptoModal'); loadCrypto(); }
+    else toast(d?.error||'Failed','error');
+  };
+  openModal('cryptoModal');
+}
 
-      // ── INVESTMENT PLANS ──
-      async function loadInvPlans() {
-        const d = await api("/admin/investment-plans");
-        if (!d) return;
-        document.getElementById("invplans-tbody").innerHTML = d
-          .map(
-            (p) => `
+// ── INV PLANS ──
+async function loadInvPlans() {
+  const d = await api('/admin/investment-plans');
+  if (!d) return;
+  document.getElementById('invplans-tbody').innerHTML = d.map(p => `
     <tr>
       <td class="bold">${p.name}</td>
-      <td>${p.investment_type}</td>
-      <td>$${fmt(p.min_amount)}</td>
-      <td>${p.max_amount ? "$" + fmt(p.max_amount) : "Unlimited"}</td>
       <td class="text-gold">${p.return_percentage}%</td>
-      <td class="text-success">${p.profit_percentage}%</td>
-      <td><span class="status-badge ${p.is_active ? "active" : "rejected"}">${p.is_active ? "Yes" : "No"}</span></td>
-      <td><button class="btn btn-view btn-sm" onclick="editPlan(${JSON.stringify(p).replace(/"/g, "&quot;")})">Edit</button></td>
+      <td>$${fmt(p.min_amount)}</td>
+      <td><span class="sbadge ${p.is_active?'active':'rejected'}">${p.is_active?'Yes':'No'}</span></td>
+      <td><button class="btn btn-view btn-sm" onclick='editPlan(${JSON.stringify(p).replace(/'/g,"&#39;")})'>Edit</button></td>
     </tr>
-  `,
-          )
-          .join("");
-      }
-      function editPlan(p) {
-        document.getElementById("planName").value = p.name;
-        document.getElementById("planType").value = p.investment_type;
-        document.getElementById("planMin").value = p.min_amount;
-        document.getElementById("planMax").value = p.max_amount || "";
-        document.getElementById("planReturn").value = p.return_percentage;
-        document.getElementById("planProfit").value = p.profit_percentage;
-        document.getElementById("planDesc").value = p.description || "";
-        document.getElementById("planActive").value = p.is_active
-          ? "true"
-          : "false";
-        document.getElementById("planSaveBtn").onclick = async () => {
-          const d = await api(`/admin/investment-plans/${p.id}`, "PUT", {
-            name: document.getElementById("planName").value,
-            investment_type: document.getElementById("planType").value,
-            min_amount: document.getElementById("planMin").value,
-            max_amount: document.getElementById("planMax").value || null,
-            return_percentage: document.getElementById("planReturn").value,
-            profit_percentage: document.getElementById("planProfit").value,
-            description: document.getElementById("planDesc").value,
-            is_active: document.getElementById("planActive").value === "true",
-          });
-          if (d?.success) {
-            toast("Plan updated", "success");
-            closeModal("planModal");
-            loadInvPlans();
-          } else toast(d?.error || "Failed", "error");
-        };
-        openModal("planModal");
-      }
+  `).join('');
+}
+function editPlan(p) {
+  document.getElementById('pName').value = p.name;
+  document.getElementById('pType').value = p.investment_type;
+  document.getElementById('pMin').value = p.min_amount;
+  document.getElementById('pMax').value = p.max_amount||'';
+  document.getElementById('pReturn').value = p.return_percentage;
+  document.getElementById('pProfit').value = p.profit_percentage;
+  document.getElementById('pDesc').value = p.description||'';
+  document.getElementById('pActive').value = p.is_active?'true':'false';
+  document.getElementById('planSaveBtn').onclick = async () => {
+    const d = await api(`/admin/investment-plans/${p.id}`,'PUT',{
+      name:document.getElementById('pName').value,
+      investment_type:document.getElementById('pType').value,
+      min_amount:document.getElementById('pMin').value,
+      max_amount:document.getElementById('pMax').value||null,
+      return_percentage:document.getElementById('pReturn').value,
+      profit_percentage:document.getElementById('pProfit').value,
+      description:document.getElementById('pDesc').value,
+      is_active:document.getElementById('pActive').value==='true'
+    });
+    if (d?.success) { toast('Plan updated','success'); closeModal('planModal'); loadInvPlans(); }
+    else toast(d?.error||'Failed','error');
+  };
+  openModal('planModal');
+}
 
-      // ── ACTIVITY LOG ──
-      async function loadActivity() {
-        const d = await api("/admin/activity-log");
-        if (!d) return;
-        document.getElementById("activity-tbody").innerHTML = d.length
-          ? d
-              .map(
-                (a) => `
+// ── ACTIVITY ──
+async function loadActivity() {
+  const d = await api('/admin/activity-log');
+  if (!d) return;
+  document.getElementById('activity-tbody').innerHTML = d.length ? d.map(a => `
     <tr>
-      <td>${a.username || "System"}</td>
-      <td>${a.action}</td>
-      <td>${a.target_type || "—"} ${a.target_id ? "#" + a.target_id : ""}</td>
-      <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;">${a.details || "—"}</td>
-      <td>${fmtDate(a.created_at)}</td>
+      <td style="font-size:12px;">${a.username||'System'}</td>
+      <td style="font-size:12px;">${a.action}</td>
+      <td style="font-size:11px;color:var(--muted);max-width:140px;overflow:hidden;text-overflow:ellipsis;">${a.details||'—'}</td>
+      <td style="font-size:11px;">${fmtDate(a.created_at)}</td>
     </tr>
-  `,
-              )
-              .join("")
-          : '<tr><td colspan="5"><div class="empty-state">No activity log</div></td></tr>';
-      }
+  `).join('') : '<tr><td colspan="4"><div class="empty">No activity</div></td></tr>';
+}
 
-      // ── GENERIC APPROVE/REJECT ──
-      function approveItem(endpoint, title, type, reloadFn) {
-        document.getElementById("approveModalTitle").textContent = title;
-        document.getElementById("approveModalExtra").innerHTML = "";
-        document.getElementById("approveNote").value = "";
-        document.getElementById("approveModalBtn").onclick = async () => {
-          const note = document.getElementById("approveNote").value;
-          const d = await api(endpoint, "PUT", { note });
-          if (d?.success) {
-            toast(d.message, "success");
-            closeModal("approveModal");
-            reloadFn();
-          } else toast(d?.error || "Failed", "error");
-        };
-        openModal("approveModal");
-      }
-      function rejectItem(endpoint, title, reloadFn) {
-        document.getElementById("rejectModalTitle").textContent = title;
-        document.getElementById("rejectNote").value = "";
-        document.getElementById("rejectModalBtn").onclick = async () => {
-          const note = document.getElementById("rejectNote").value;
-          const d = await api(endpoint, "PUT", { note });
-          if (d?.success) {
-            toast(d.message, "success");
-            closeModal("rejectModal");
-            reloadFn();
-          } else toast(d?.error || "Failed", "error");
-        };
-        openModal("rejectModal");
-      }
+// ── GENERIC APPROVE / REJECT ──
+function approveItem(endpoint, title, reloadFn) {
+  document.getElementById('approveModalTitle').textContent = title;
+  document.getElementById('approveModalExtra').innerHTML = '';
+  document.getElementById('approveNote').value = '';
+  document.getElementById('approveBtn').onclick = async () => {
+    const note = document.getElementById('approveNote').value;
+    const d = await api(endpoint,'PUT',{note});
+    if (d?.success) { toast(d.message,'success'); closeModal('approveModal'); reloadFn(); }
+    else toast(d?.error||'Failed','error');
+  };
+  openModal('approveModal');
+}
+function rejectItem(endpoint, title, reloadFn) {
+  document.getElementById('rejectModalTitle').textContent = title;
+  document.getElementById('rejectNote').value = '';
+  document.getElementById('rejectBtn').onclick = async () => {
+    const note = document.getElementById('rejectNote').value;
+    const d = await api(endpoint,'PUT',{note});
+    if (d?.success) { toast(d.message,'success'); closeModal('rejectModal'); reloadFn(); }
+    else toast(d?.error||'Failed','error');
+  };
+  openModal('rejectModal');
+}
 
-      // ── MODAL HELPERS ──
-      function openModal(id) {
-        document.getElementById(id).classList.add("active");
-      }
-      function closeModal(id) {
-        document.getElementById(id).classList.remove("active");
-      }
-      document.querySelectorAll(".modal-overlay").forEach((m) => {
-        m.addEventListener("click", (e) => {
-          if (e.target === m) m.classList.remove("active");
-        });
-      });
+// ── MODALS ──
+function openModal(id) { document.getElementById(id).classList.add('active'); }
+function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+document.querySelectorAll('.moverlay').forEach(m => {
+  m.addEventListener('click', e => { if (e.target === m) m.classList.remove('active'); });
+});
 
-      // ── TOAST ──
-      function toast(msg, type = "info") {
-        const icons = { success: "✅", error: "❌", warning: "⚠️", info: "ℹ️" };
-        const el = document.createElement("div");
-        el.className = `toast ${type}`;
-        el.innerHTML = `<span>${icons[type] || "ℹ️"}</span><span>${msg}</span>`;
-        document.getElementById("toastContainer").appendChild(el);
-        setTimeout(() => el.remove(), 4000);
-      }
+// ── TOAST ──
+function toast(msg, type='info') {
+  const icons = {success:'✅',error:'❌',info:'ℹ️',warning:'⚠️'};
+  const el = document.createElement('div');
+  el.className = `toast ${type}`;
+  el.innerHTML = `<span>${icons[type]||'ℹ️'}</span><span>${msg}</span>`;
+  document.getElementById('toastWrap').appendChild(el);
+  setTimeout(() => el.remove(), 4000);
+}
 
-      // ── FORMATTERS ──
-      function fmt(n) {
-        return parseFloat(n || 0).toLocaleString("en-US", {
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2,
-        });
-      }
-      function fmtDate(d) {
-        if (!d) return "—";
-        return new Date(d).toLocaleDateString("en-US", {
-          month: "short",
-          day: "numeric",
-          year: "numeric",
-          hour: "2-digit",
-          minute: "2-digit",
-        });
-      }
-    </script>
-  </body>
+// ── FORMATTERS ──
+function fmt(n) { return parseFloat(n||0).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}); }
+function fmtDate(d) { if(!d)return'—'; return new Date(d).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric',hour:'2-digit',minute:'2-digit'}); }
+</script>
+</body>
 </html>
